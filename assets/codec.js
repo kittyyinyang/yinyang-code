@@ -1114,7 +1114,8 @@ const RULE_FLOOR = {
   R1: 4, R2: 4, R3: 5, R4: 4, R5: 4, R6: 3, R7: 4, R8: 3, R9: 1,
   R10: 4, R11: 4, R12: 5, R13: 6, R14: 5, R15: 8, R16: 4, R17: 2,
   R18: 2, R19: 2, R20: 3, R21: 5, R22: 5, R23: 5, R24: 1, R25: 3,
-  R26: 8, R27: 4, R28: 1
+  R26: 8, R27: 4, R28: 1,
+  R29: 4, R30: 1
 };
 const floorOf = ruleId => RULE_FLOOR[ruleId] || null;
 
@@ -1143,6 +1144,44 @@ function symmetryLaw(stimulus, reaction) {
   if (reaction === 'flight') return { verdict: '阴', note: (S[stimulus] || stimulus) + ' → 恐惧退缩（flight）', ref: 'B264 05:30' };
   return { verdict: '待定', note: 'reaction 须为 fight/flight', ref: 'B264 05:30' };
 }
+
+// R29 动机判核律（测评V5.10 用户洞察「行为可重合，动机才分人」+ B730 说谎动机分野 + B255 付出动机）
+// 同一行为，动机分核：判阴阳看「为什么做」，不看「做了什么」——反编译时先问动机再记分
+const MOTIVE_PAIRS = [
+  { act: '说谎', yang: '服务于更高目的（有选择绝不说谎，宁可得罪人）', yin: '怕得罪你/怕直面冲突而说谎', ref: 'B730 00:00-00:58' },
+  { act: '解释', yang: '纠正事实（你的看法不归我管）', yin: '修复连接（怕你看错真正的我）', ref: '测评V5.6 Q3 麦克反馈' },
+  { act: '付出', yang: '证明自己靠谱/有能力', yin: '出于怕被抛弃而付出', ref: 'B255 01:36' },
+  { act: '权衡', yang: '怕停滞（悬着不做比不完美决定更难受）', yin: '怕后悔（选错伤人/自己后悔）', ref: '测评V5.6 Q10 麦克反馈' }
+];
+function motiveJudge(act, motive) {
+  const p = MOTIVE_PAIRS.find(m => m.act === act);
+  if (!p) return { verdict: '待定', note: '未知行为类型（MOTIVE_PAIRS 未收录）' };
+  if (motive === p.yang) return { verdict: '阳', ref: p.ref };
+  if (motive === p.yin) return { verdict: '阴', ref: p.ref };
+  return { verdict: '待定', note: '动机与已知分野不匹配——可能是壳信号（B716），先剥壳再判' };
+}
+
+// R30 恐惧不对称律（测评V5.6 Q10「问恐惧什么而非做什么」+ B377 无能=不被爱 + B29 被抛弃）：
+// 阴的恐惧指向关系（后悔/被抛弃/断裂），阳的恐惧指向自我效能（停滞/无能/失控）
+function fearAxis(fear) {
+  const s = fear || '';
+  if (['停滞', '无能', '失控', '不靠谱', '平庸'].some(k => s.indexOf(k) >= 0)) return { verdict: '阳', ref: 'B377 + 测评V5.6 Q10' };
+  if (['后悔', '被抛弃', '断裂', '不被爱', '孤独'].some(k => s.indexOf(k) >= 0)) return { verdict: '阴', ref: 'B29/B201 + 测评V5.6 Q10' };
+  return { verdict: '待定', note: '恐惧词不在已知轴上（可扩充）' };
+}
+
+// ---------- 测评题设计九原则（V5.6→V6.1 六轮内测迭代沉淀，2026-09-24 自云端项目资产「测评题库」归档） ----------
+const TEST_PRINCIPLES = [
+  { id: 'P1', name: '动机优先', rule: '测动机不测行为——行为可重合，动机才分人', src: '测评V5.10 + B730' },
+  { id: 'P2', name: '能量方向', rule: '不测「是否解释/是否权衡」（两边都会），测能量先往哪去/转换速度/时间间隔', src: '测评V5.7-V5.8 麦克反馈' },
+  { id: 'P3', name: '两边都正常', rule: '两个选项都是成熟应对方式，差异在优先级，无社会对错', src: '测评V5.6-V6.1' },
+  { id: 'P4', name: '阳不冷阴不糊', rule: '阳=无能恐惧+完美主义（在乎被看成靠谱，会不爽会权衡但不内耗）；阴=深度消化不黏糊', src: '测评V5.6/V5.11' },
+  { id: 'P5', name: '恐惧不对称', rule: '阴怕后悔/关系断裂，阳怕停滞/无能——问恐惧什么而非做什么', src: '测评V5.6 Q10 + B377/B29' },
+  { id: 'P6', name: '亲密度限定', rule: '题干限定亲密/重要关系，泛泛关系触发不出真实内心戏', src: '测评V5.11' },
+  { id: 'P7', name: '男阴双形态', rule: '外放加戏+壳内收写进同一选项，不逼男阴公开承认脆弱', src: '测评V5.9' },
+  { id: 'P8', name: '选项克制', rule: '选项≤3（V5.8 四选项翻车）；阴阳归属跨题打乱防摸规律', src: '测评V5.8/V5.9/V6.0' },
+  { id: 'P9', name: '假面突破题', rule: '独处思绪/无社会压力场景最难伪装；「无法判断」=壳厚信号，向下钻取不强行归类', src: '测评V5.6 Q6 + B716' }
+];
 
 // R21 分辨难度=壳厚度=规训强度（B716 全篇）
 function shellThickness(hardToTell) {
@@ -1249,8 +1288,8 @@ function selfTest10() {
   const errs = [];
   // FLOORS 完整
   for (let i = 1; i <= 9; i++) if (!FLOORS[i]) errs.push('FLOORS 缺 ' + i);
-  // RULE_FLOOR 覆盖 R1-R28
-  for (let i = 1; i <= 28; i++) if (floorOf('R' + i) == null) errs.push('RULE_FLOOR 缺 R' + i);
+  // RULE_FLOOR 覆盖 R1-R30
+  for (let i = 1; i <= 30; i++) if (floorOf('R' + i) == null) errs.push('RULE_FLOOR 缺 R' + i);
   // R21
   if (shellThickness(3).thickness !== '厚') errs.push('R21 shellThickness');
   // R22
@@ -1276,6 +1315,17 @@ function selfTest10() {
   if (symmetryLaw('threat', 'fight').verdict !== '阳') errs.push('R28 威胁fight');
   if (symmetryLaw('positive', 'flight').verdict !== '阴') errs.push('R28 正向flight');
   if (symmetryLaw('threat', 'x').verdict !== '待定') errs.push('R28 非法输入');
+  // R29 动机判核
+  if (motiveJudge('说谎', MOTIVE_PAIRS[0].yang).verdict !== '阳') errs.push('R29 说谎阳');
+  if (motiveJudge('付出', '出于怕被抛弃而付出').verdict !== '阴') errs.push('R29 付出阴');
+  if (motiveJudge('解释', '别的理由').verdict !== '待定') errs.push('R29 壳信号待定');
+  // R30 恐惧轴
+  if (fearAxis('最怕停滞不前').verdict !== '阳') errs.push('R30 停滞阳');
+  if (fearAxis('怕被抛弃').verdict !== '阴') errs.push('R30 抛弃阴');
+  if (fearAxis('怕高').verdict !== '待定') errs.push('R30 轴外待定');
+  // 测评九原则
+  if (TEST_PRINCIPLES.length !== 9) errs.push('TEST_PRINCIPLES 条数');
+  if (TEST_PRINCIPLES[0].rule.indexOf('动机') < 0) errs.push('P1 内容');
   // JUDGE 16条（J1-J7 原始七条 + J8/J9 内核三问 + J10-J16 能量层八判据去重）
   if (JUDGE.length !== 16) errs.push('JUDGE 条数');
   if (JUDGE.find(j => j.id === 'J8').yang.indexOf('膨胀') < 0) errs.push('J8 内容');
@@ -1343,7 +1393,7 @@ const YY = { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_R
   XIANG, XING, xiangXing, releaseCheck, lineageChain, sacrifice, lossReaction, attachment, AFFECT, affectChannel, affectInj, shellAwareness, RELAPSE_TRIGGER, relapse, selfTest7, selfTest8, selfTest9,
   FLOORS, RULE_FLOOR, floorOf, shellThickness, innerOuterLaw, FAKE_YANG_SOURCES, disguiseType,
   truthTest, JUDGE, judgeYinYang, climbState, selfTest10,
-  relapseVerify, crossCultivate, symmetryLaw,
+  relapseVerify, crossCultivate, symmetryLaw, motiveJudge, fearAxis, MOTIVE_PAIRS, TEST_PRINCIPLES,
   selfTest, selfTest2, selfTest3,
   CRUX, judgeKernel, selfTest11 };
 
