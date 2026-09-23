@@ -115,15 +115,17 @@ td.num,th.num{text-align:right; font-family:var(--mono); font-size:.88rem}
 .bar > span{display:block; height:100%; background:linear-gradient(90deg,var(--yin),var(--yang))}
 
 /* ---------- 表单 ---------- */
-label.q{display:block; padding:12px 14px; border:1px solid var(--line); border-radius:8px;
+/* ⚠️ 外层用 .q（div）而非 label.q：label 内多个 radio 时点击只会激活第一个 */
+.q{display:block; padding:12px 14px; border:1px solid var(--line); border-radius:8px;
   background:#fff; margin:10px 0; font-size:.95rem}
-label.q .t{display:block; margin-bottom:8px}
-label.q .opts{display:flex; gap:8px; flex-wrap:wrap}
-label.q input[type=radio]{position:absolute; opacity:0; pointer-events:none}
-label.q .opt{display:inline-block; padding:5px 13px; border:1px solid var(--line); border-radius:20px;
+.q .t{display:block; margin-bottom:8px}
+.q .opts{display:flex; gap:8px; flex-wrap:wrap}
+.q .opt{display:inline-flex; align-items:center; gap:6px; padding:5px 13px;
+  border:1px solid var(--line); border-radius:20px;
   font-size:.88rem; cursor:pointer; background:var(--paper-2); user-select:none}
-label.q input:checked + .opt{background:var(--ink); color:var(--paper); border-color:var(--ink)}
-label.q .hint{display:block; margin-top:6px; font-size:.8rem; color:var(--ink-3)}
+.q .opt input[type=radio]{width:auto; margin:0; accent-color:var(--ink)}
+.q .opt:has(input:checked){background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.q .hint{display:block; margin-top:6px; font-size:.8rem; color:var(--ink-3)}
 select,input[type=text],input[type=number]{font-family:var(--sans); font-size:.95rem; padding:6px 9px;
   border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink)}
 pre{background:var(--paper-2); border:1px solid var(--line); border-radius:8px; padding:14px 16px;

@@ -89,13 +89,14 @@
     const el = document.getElementById(elId);
     let h = '';
     for (const r of rs) {
-      h += '<label class="q"><span class="t">' + r.desc +
+      // ⚠️ 外层必须用 div 而非 label：label 内多个 radio 时，点击只会激活第一个
+      h += '<div class="q"><span class="t">' + r.desc +
            ' <span class="tag">' + (r.level === 'A' ? '强证据' : '壳信号') + ' · 权重 ' + r.w + '</span></span>' +
            '<span class="opts">' +
-           '<input type="radio" name="' + r.id + '" value="1"><span class="opt">偏前者</span>' +
-           '<input type="radio" name="' + r.id + '" value="-1"><span class="opt">偏后者</span>' +
-           '<input type="radio" name="' + r.id + '" value="0"><span class="opt">说不清</span>' +
-           '</span><span class="hint">' + tip + '</span></label>';
+           '<label class="opt"><input type="radio" name="' + r.id + '" value="1"> 偏前者</label>' +
+           '<label class="opt"><input type="radio" name="' + r.id + '" value="-1"> 偏后者</label>' +
+           '<label class="opt"><input type="radio" name="' + r.id + '" value="0"> 说不清</label>' +
+           '</span><span class="hint">' + tip + '</span></div>';
     }
     el.innerHTML = h;
   }
