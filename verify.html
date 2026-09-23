@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>验证回路 · 阴阳人格编码体系</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a href="index.html">总纲</a>
+      <a href="test.html">测一测</a>
+      <a href="family.html">原生家庭</a>
+      <a href="shed.html">破壳路径</a>
+      <a href="motive.html">动机层</a>
+      <a href="hex64.html">64卦</a>
+      <a class="on" href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section class="hero">
+    <h1>验证回路</h1>
+    <p class="sub">这是内测入口。如果你已经知道自己的代码，或者已经破解过原生家庭，
+      请用它<b>复核推演</b>。分歧比一致更有价值。</p>
+  </section>
+
+  <div class="card warn">
+    <h4 style="margin-top:0">分歧是最有价值的样本</h4>
+    <p style="margin:0">没有反例的验证是自证。如果你判出来和推演不一样，
+      <b>那不是你错了，也可能是规则错了</b>——请务必提交。</p>
+  </div>
+
+  <h2 class="anchor">一、卦码比对</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h4 style="margin-top:0">我已知的真实卦码</h4>
+      <select id="known"></select>
+      <p class="small" style="margin:.6em 0 0">如果你已经通过别的方式确认了自己的代码。</p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">本站推演出的卦码</h4>
+      <select id="pred"></select>
+      <p class="small" style="margin:.6em 0 0">在<a href="test.html">测一测</a>或<a href="family.html">原生家庭</a>得到。</p>
+    </div>
+  </div>
+  <div class="row">
+    <label>置信度
+      <select id="conf"><option value="3">很确定</option><option value="2">比较确定</option>
+      <option value="1">不太确定</option></select>
+    </label>
+    <input type="text" id="note" placeholder="补充说明（可选）" style="flex:1;min-width:200px">
+    <button class="btn" id="addc">记录这一条</button>
+  </div>
+  <div id="cmpOut"></div>
+
+  <h2 class="anchor">二、代际传递比对</h2>
+  <div class="grid g3">
+    <div class="card"><h4 style="margin-top:0">父亲</h4><select id="vf"></select></div>
+    <div class="card"><h4 style="margin-top:0">母亲</h4><select id="vm"></select></div>
+    <div class="card"><h4 style="margin-top:0">我（实测）</h4><select id="vk"></select></div>
+  </div>
+  <div class="row">
+    <button class="btn" id="addf">记录家庭案例</button>
+  </div>
+  <div id="famOut"></div>
+
+  <h2 class="anchor">三、已记录的样本</h2>
+  <div class="row">
+    <button class="btn ghost" id="exp">导出 JSON</button>
+    <button class="btn ghost" id="clr">清空本地记录</button>
+    <span class="small">记录保存在本机浏览器，不会上传。</span>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>类型</th><th>内容</th><th>结果</th><th class="num">置信</th><th>备注</th></tr></thead>
+    <tbody id="list"></tbody>
+  </table></div>
+
+  <h2 class="anchor">四、还缺哪些样本</h2>
+  <div class="scroll"><table>
+    <thead><tr><th>优先级</th><th>缺口</th><th>需要什么样的人</th><th>为什么</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag warn">P0</span></td><td>父母都不带壳的家庭</td>
+        <td>父母双方都是真体，且知道其卦码</td>
+        <td>现唯一家庭撕裂度为 2。若「父母真体 → 子女不带壳」不成立，核心规则被证伪</td></tr>
+      <tr><td><span class="tag warn">P0</span></td><td>已破壳者回溯</td>
+        <td>能说清「我以前是 X，现在是 Y」的人</td>
+        <td>剥壳归真目前只有 1 个样本，而这是产品最核心的承诺</td></tr>
+      <tr><td><span class="tag warn">P0</span></td><td>同卦第二人</td>
+        <td>再来一个震、一个巽</td>
+        <td>难度 3 的两卦各只有 1 人，无法区分卦码效应与个人特质</td></tr>
+      <tr><td><span class="tag yang">P1</span></td><td>每卦 ≥3 人</td><td>各卦都多来几个</td><td>同卦者是否有共同结构</td></tr>
+      <tr><td><span class="tag yang">P1</span></td><td>撕裂度 = 1 的家庭</td><td>一个带壳 + 一个真体的父母组合</td>
+        <td>缺中间档，无法判断撕裂度是分级还是有无</td></tr>
+      <tr><td><span class="tag yang">P1</span></td><td>非错卦配对</td><td>同卦 / 半同卦的伴侣</td>
+        <td>现样本几乎全是错卦对，无法回答同类相吸还是互补</td></tr>
+      <tr><td><span class="tag">P2</span></td><td>反例</td><td>推演判 A、本人坚称是 B</td>
+        <td>把命中率从 90% 推向 95%+ 的唯一途径</td></tr>
+      <tr><td><span class="tag">P2</span></td><td>强度自评锚点</td><td>能给规训强度打 0–3 分的人</td>
+        <td>强度标定目前是单样本，需要外部锚点</td></tr>
+    </tbody>
+  </table></div>
+
+</div></main>
+
+<footer class="site"><div class="wrap">
+  验证回路 ｜ 记录存于本机，导出后请自行回传
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script>
+(function(){
+  const Y = window.YY;
+  const NAMES = ['乾','兑','离','震','巽','坎','艮','坤'];
+  const KEY = 'yy_verify_v1';
+  let REC = [];
+  try { REC = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { REC = []; }
+
+  function fill(id, withUnknown){
+    const el = document.getElementById(id);
+    el.innerHTML = (withUnknown ? '<option value="-1">（未知）</option>' : '') +
+      NAMES.map(n => '<option value="' + Y.BY_NAME[n].code + '">' + Y.BY_NAME[n].sym + ' ' +
+        n + ' · ' + Y.BY_NAME[n].role + '</option>').join('');
+  }
+  fill('known'); fill('pred'); fill('vf', true); fill('vm', true); fill('vk');
+
+  function save(){ localStorage.setItem(KEY, JSON.stringify(REC)); render(); }
+  function render(){
+    const tb = document.getElementById('list');
+    if (!REC.length) { tb.innerHTML = '<tr><td colspan="5" class="small muted">（暂无记录）</td></tr>'; return; }
+    tb.innerHTML = REC.map(r =>
+      '<tr><td>' + (r.type === 'cmp' ? '卦码比对' : '家庭案例') + '</td>' +
+      '<td>' + r.desc + '</td>' +
+      '<td>' + (r.agree ? '<span class="tag ok">一致</span>' : '<span class="tag warn">分歧</span>') + '</td>' +
+      '<td class="num">' + r.conf + '</td><td class="small">' + (r.note || '') + '</td></tr>').join('');
+  }
+
+  document.getElementById('addc').onclick = function(){
+    const k = parseInt(document.getElementById('known').value, 10);
+    const p = parseInt(document.getElementById('pred').value, 10);
+    const agree = k === p;
+    REC.push({ type: 'cmp', known: Y.BY_CODE[k].name, pred: Y.BY_CODE[p].name,
+      agree, conf: parseInt(document.getElementById('conf').value, 10),
+      note: document.getElementById('note').value.trim(),
+      desc: '已知 ' + Y.BY_CODE[k].sym + Y.BY_CODE[k].name + ' / 推演 ' + Y.BY_CODE[p].sym + Y.BY_CODE[p].name,
+      ts: new Date().toISOString() });
+    save();
+    document.getElementById('cmpOut').innerHTML =
+      '<div class="card ' + (agree ? 'note' : 'warn') + '"><p style="margin:0">' +
+      (agree ? '✅ 一致。感谢复核。' : '⚠️ 已记录分歧。这一条比一致更有价值，请尽量补备注说明差异在哪。') +
+      '</p></div>';
+    document.getElementById('note').value = '';
+  };
+
+  document.getElementById('addf').onclick = function(){
+    const f = parseInt(document.getElementById('vf').value, 10);
+    const m = parseInt(document.getElementById('vm').value, 10);
+    const k = parseInt(document.getElementById('vk').value, 10);
+    const kk = Y.energy(k), ks = Y.sex(k);
+    const pf = f >= 0 ? Y.childFrom(kk, ks, f) : -1;
+    const pm = m >= 0 ? Y.childFrom(kk, ks, m) : -1;
+    const agree = pf === k || pm === k;
+    const tear = (f >= 0 && m >= 0) ? Y.familyTear(f, m) : null;
+    const fn = f >= 0 ? Y.BY_CODE[f].name : '未知', mn = m >= 0 ? Y.BY_CODE[m].name : '未知';
+    REC.push({ type: 'fam', father: fn, mother: mn, me: Y.BY_CODE[k].name,
+      predF: pf >= 0 ? Y.BY_CODE[pf].name : null, predM: pm >= 0 ? Y.BY_CODE[pm].name : null,
+      tear, agree, conf: parseInt(document.getElementById('conf').value, 10),
+      note: document.getElementById('note').value.trim(),
+      desc: '父 ' + fn + ' + 母 ' + mn + ' → 我 ' + Y.BY_CODE[k].name +
+            '（按父推 ' + (pf >= 0 ? Y.BY_CODE[pf].name : '—') +
+            ' / 按母推 ' + (pm >= 0 ? Y.BY_CODE[pm].name : '—') + '）' +
+            (tear !== null ? '，撕裂度 ' + tear : ''),
+      ts: new Date().toISOString() });
+    save();
+    document.getElementById('famOut').innerHTML =
+      '<div class="card ' + (agree ? 'note' : 'warn') + '"><p style="margin:0">' +
+      (agree ? '✅ 与代际规则一致。' : '⚠️ 已记录分歧。请补备注：你的内核是怎么判断的？') + '</p></div>';
+    document.getElementById('note').value = '';
+  };
+
+  document.getElementById('exp').onclick = function(){
+    const blob = new Blob([JSON.stringify(REC, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '阴阳编码_验证样本_' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+  };
+  document.getElementById('clr').onclick = function(){
+    if (confirm('清空本机所有验证记录？')) { REC = []; save(); }
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>

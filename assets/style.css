@@ -1,0 +1,148 @@
+/* 阴阳人格 · 编码体系 —— 晨昏光谱 v2
+   paper 纸白 / ink 墨黑 / yang 晨橙 / yin 暮蓝 / cinnabar 朱砂 */
+:root{
+  --paper:#FAF7F2; --paper-2:#F2ECE3; --paper-3:#E8E0D4;
+  --ink:#232230; --ink-2:#4A4A5C; --ink-3:#7A7A8C;
+  --yang:#E8913A; --yang-soft:#F6D5B0;
+  --yin:#4E6E9E;  --yin-soft:#C8D6E8;
+  --cinnabar:#B5483A; --cinnabar-soft:#EBD0CB;
+  --line:#DED5C8;
+  --serif:"Noto Serif SC","Songti SC","STSong",serif;
+  --sans:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Courier New",monospace;
+  --maxw:1080px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.75;
+}
+a{color:var(--yin); text-decoration:none; border-bottom:1px solid var(--yin-soft)}
+a:hover{border-bottom-color:var(--yin)}
+h1,h2,h3,h4{font-family:var(--serif); font-weight:700; margin:0 0 .6em; line-height:1.35}
+h1{font-size:2rem; letter-spacing:.02em}
+h2{font-size:1.5rem; margin-top:2.2em}
+h3{font-size:1.2rem; margin-top:1.8em}
+h4{font-size:1.05rem; margin-top:1.4em}
+p{margin:0 0 1em}
+small,.small{font-size:.85rem; color:var(--ink-3)}
+code{font-family:var(--mono); font-size:.9em; background:var(--paper-2); padding:.1em .4em; border-radius:3px}
+hr{border:0; border-top:1px solid var(--line); margin:2.4em 0}
+
+/* ---------- 布局 ---------- */
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+header.site{
+  border-bottom:1px solid var(--line); background:var(--paper);
+  position:sticky; top:0; z-index:50;
+}
+header.site .wrap{display:flex; align-items:center; gap:24px; height:60px; flex-wrap:wrap}
+.brand{font-family:var(--serif); font-weight:700; font-size:1.15rem; letter-spacing:.06em; white-space:nowrap}
+.brand .y{color:var(--yang)} .brand .i{color:var(--yin)}
+nav.site{display:flex; gap:18px; flex-wrap:wrap; font-size:.95rem}
+nav.site a{color:var(--ink-2); border:0; padding:2px 0}
+nav.site a:hover{color:var(--ink)}
+nav.site a.on{color:var(--ink); font-weight:700; box-shadow:inset 0 -2px 0 var(--yang)}
+main{padding:40px 0 80px}
+footer.site{border-top:1px solid var(--line); padding:28px 0; color:var(--ink-3); font-size:.85rem}
+
+/* ---------- 组件 ---------- */
+.hero{padding:16px 0 8px}
+.hero h1{margin-bottom:.3em}
+.hero .sub{color:var(--ink-2); font-size:1.05rem; max-width:720px}
+.anchor{color:var(--ink); font-family:var(--serif); font-weight:700; font-size:1.15rem;
+  border-left:3px solid var(--yang); padding-left:12px; margin:2.4em 0 1em; display:block}
+
+.card{background:#fff; border:1px solid var(--line); border-radius:8px; padding:20px 22px; margin:16px 0}
+.card.soft{background:var(--paper-2)}
+.card.warn{border-left:4px solid var(--cinnabar); background:#FFF8F6}
+.card.note{border-left:4px solid var(--yin); background:#F4F7FB}
+.card.key{border-left:4px solid var(--yang); background:#FFFAF3}
+.card h3,.card h4{margin-top:0}
+
+.grid{display:grid; gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+
+table{border-collapse:collapse; width:100%; font-size:.92rem; margin:12px 0}
+th,td{border:1px solid var(--line); padding:7px 10px; text-align:left; vertical-align:top}
+th{background:var(--paper-2); font-weight:700; font-family:var(--serif)}
+tbody tr:nth-child(even){background:#FCFAF7}
+td.num,th.num{text-align:right; font-family:var(--mono); font-size:.88rem}
+.scroll{overflow-x:auto}
+
+.tag{display:inline-block; font-size:.75rem; padding:1px 7px; border-radius:10px;
+  border:1px solid var(--line); background:var(--paper-2); color:var(--ink-2); white-space:nowrap}
+.tag.yang{background:var(--yang-soft); border-color:var(--yang); color:#7A4310}
+.tag.yin{background:var(--yin-soft); border-color:var(--yin); color:#22395C}
+.tag.warn{background:var(--cinnabar-soft); border-color:var(--cinnabar); color:#7C2A20}
+.tag.ok{background:#DDEBE0; border-color:#6F9A78; color:#2F5138}
+
+.btn{display:inline-block; font-family:var(--sans); font-size:.95rem; padding:8px 18px;
+  border:1px solid var(--ink); border-radius:6px; background:var(--ink); color:var(--paper);
+  cursor:pointer; text-decoration:none}
+.btn:hover{background:#35354A; color:#fff}
+.btn.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+.btn.ghost:hover{background:var(--paper-2); color:var(--ink)}
+.btn.sm{padding:5px 12px; font-size:.85rem}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:12px 0}
+
+/* ---------- 爻 ---------- */
+.yao{display:inline-flex; flex-direction:column-reverse; gap:5px; vertical-align:middle}
+.yao i{display:block; height:9px; width:56px; background:var(--ink); border-radius:1px}
+.yao i.yin{background:transparent; position:relative}
+.yao i.yin::before,.yao i.yin::after{content:""; position:absolute; top:0; height:9px; width:23px;
+  background:var(--ink); border-radius:1px}
+.yao i.yin::before{left:0} .yao i.yin::after{right:0}
+.yao.sm i{height:7px; width:38px} .yao.sm i.yin::before,.yao.sm i.yin::after{height:7px; width:15px}
+.yao i.hl{background:var(--yang)} .yao i.yin.hl::before,.yao i.yin.hl::after{background:var(--yang)}
+.yao i.dim{background:var(--ink-3)} .yao i.yin.dim::before,.yao i.yin.dim::after{background:var(--ink-3)}
+
+.gua{display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px;
+  border:1px solid var(--line); border-radius:8px; background:#fff; min-width:96px}
+.gua .sym{font-size:1.5rem; line-height:1; color:var(--ink)}
+.gua .nm{font-family:var(--serif); font-weight:700; font-size:1rem}
+.gua .rl{font-size:.78rem; color:var(--ink-3); text-align:center; line-height:1.3}
+.gua.shell{background:#FFFAF3; border-color:var(--yang-soft)}
+.gua.true{background:#F4F7FB; border-color:var(--yin-soft)}
+.gua.on{outline:2px solid var(--cinnabar); outline-offset:1px}
+.gua.click{cursor:pointer}
+.gua.click:hover{box-shadow:0 2px 10px rgba(35,34,48,.10)}
+
+/* 外显能量条 */
+.bar{height:8px; background:var(--paper-3); border-radius:4px; overflow:hidden; min-width:80px}
+.bar > span{display:block; height:100%; background:linear-gradient(90deg,var(--yin),var(--yang))}
+
+/* ---------- 表单 ---------- */
+label.q{display:block; padding:12px 14px; border:1px solid var(--line); border-radius:8px;
+  background:#fff; margin:10px 0; font-size:.95rem}
+label.q .t{display:block; margin-bottom:8px}
+label.q .opts{display:flex; gap:8px; flex-wrap:wrap}
+label.q input[type=radio]{position:absolute; opacity:0; pointer-events:none}
+label.q .opt{display:inline-block; padding:5px 13px; border:1px solid var(--line); border-radius:20px;
+  font-size:.88rem; cursor:pointer; background:var(--paper-2); user-select:none}
+label.q input:checked + .opt{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+label.q .hint{display:block; margin-top:6px; font-size:.8rem; color:var(--ink-3)}
+select,input[type=text],input[type=number]{font-family:var(--sans); font-size:.95rem; padding:6px 9px;
+  border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink)}
+pre{background:var(--paper-2); border:1px solid var(--line); border-radius:8px; padding:14px 16px;
+  overflow-x:auto; font-family:var(--mono); font-size:.85rem; line-height:1.6}
+
+/* 结果大卡 */
+.result{border:2px solid var(--ink); border-radius:12px; padding:24px; background:#fff; margin:20px 0}
+.result .head{display:flex; gap:22px; align-items:center; flex-wrap:wrap}
+.result .head .sym{font-size:3.4rem; line-height:1; font-family:var(--serif)}
+.result .head .nm{font-family:var(--serif); font-size:1.9rem; font-weight:700}
+.hidden{display:none !important}
+.muted{color:var(--ink-3)}
+.big{font-family:var(--serif); font-size:1.35rem; font-weight:700}
+.kv{display:flex; gap:8px; flex-wrap:wrap; font-size:.9rem}
+.kv > div{border:1px solid var(--line); border-radius:6px; padding:6px 12px; background:var(--paper-2)}
+.kv b{font-family:var(--mono)}
+
+@media(max-width:640px){
+  h1{font-size:1.6rem} h2{font-size:1.3rem}
+  header.site .wrap{height:auto; padding:10px 20px}
+  .result .head .sym{font-size:2.6rem} .result .head .nm{font-size:1.5rem}
+}

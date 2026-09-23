@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>破壳路径 · 阴阳人格编码体系</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a href="index.html">总纲</a>
+      <a href="test.html">测一测</a>
+      <a href="family.html">原生家庭</a>
+      <a class="on" href="shed.html">破壳路径</a>
+      <a href="motive.html">动机层</a>
+      <a href="hex64.html">64卦</a>
+      <a href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section class="hero">
+    <h1>破壳路径</h1>
+    <p class="sub">破壳不是「改三爻」，是<b>解除规训</b>——三爻会自己翻过来。
+      这一层把「我要改变」翻译成「我要解除哪几条训」。</p>
+  </section>
+
+  <h2 class="anchor">规训集：壳是怎么被撑住的</h2>
+  <p>每一条训有四个字段：</p>
+  <pre>训 = { 来源, 方向(1要你显阳 / 0要你显阴), 强度 0–3 }</pre>
+  <div class="grid g2">
+    <div class="card">
+      <h4 style="margin-top:0">两条规则</h4>
+      <p style="margin:0;font-size:.95rem">
+        · 与内核<b>反向</b>的训撑住壳<br>
+        · 与内核<b>同向</b>的训撑住真身<br>
+        <b>壳 = 反向合力 &gt; 同向合力</b></p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">性别脚本训是特殊的</h4>
+      <p style="margin:0;font-size:.95rem">它由二爻派生，强度<b>固定为 2</b>。<br>
+      它<b>不可删除，只能超越</b>。<br>
+      <span class="small">这就是为什么「女 + 阳内核」天然就要多打一仗。</span></p>
+    </div>
+  </div>
+
+  <div class="card key">
+    <h4 style="margin-top:0">破壳 = 按强度降序解除训，直到卦码翻转</h4>
+    <p style="margin:0">不需要「决定要变成什么样」。训解除够了，<b>外显自动归位</b>。
+      <code>剥壳归真</code> 是删训的<b>结果</b>，不是额外规则。</p>
+  </div>
+
+  <h2 class="anchor">推演</h2>
+
+  <div class="card">
+    <div class="row">
+      <label>内核 <select id="kernel"><option value="1">阳</option><option value="0">阴</option></select></label>
+      <label>性别 <select id="sex"><option value="1">男</option><option value="0">女</option></select></label>
+    </div>
+    <div id="sexNote" class="small"></div>
+  </div>
+
+  <h3>规训清单</h3>
+  <div id="injs"></div>
+  <div class="row">
+    <input type="text" id="src" placeholder="来源，如：母亲·要乖" style="flex:1;min-width:180px">
+    <select id="dir"><option value="0">要我显阴</option><option value="1">要我显阳</option></select>
+    <select id="st"><option value="0">强度 0</option><option value="1">强度 1</option>
+      <option value="2" selected>强度 2</option><option value="3">强度 3</option></select>
+    <button class="btn ghost sm" id="add">+ 添加</button>
+  </div>
+  <div class="row">
+    <button class="btn" id="go">推演破壳路径</button>
+    <button class="btn ghost" id="demo">载入示例（阴壳女阳）</button>
+    <button class="btn ghost" id="clear">清空</button>
+  </div>
+
+  <div id="out"></div>
+
+  <h2 class="anchor">两条硬结论</h2>
+  <div class="grid g2">
+    <div class="card warn">
+      <h4 style="margin-top:0">① 只解除最大的那一股，不够</h4>
+      <p style="margin:0;font-size:.95rem">示例里解除母训（强度 3）之后<b>仍在壳中</b>，
+        必须再解除父训（强度 2）才翻转。<br>
+        <span class="small">破壳有<b>临界点</b>——不是「想通了一件大事」就好了。</span></p>
+    </div>
+    <div class="card warn">
+      <h4 style="margin-top:0">② 人不在了，训还在</h4>
+      <p style="margin:0;font-size:.95rem">示例中父亲很早就离世，但他的训强度仍是 2，
+        并且是翻转的<b>必要条件</b>。<br>
+        <span class="small">规训活在心里，不活在那个人的在场与否。</span></p>
+    </div>
+  </div>
+
+  <h2 class="anchor">要不要写进产品文案</h2>
+  <div class="card">
+    <p style="margin:0">难度 3（震 / 巽）的人，破壳要打<b>两仗</b>，而且第二仗<b>没有社会奖励</b>——
+      剥壳之后性别关还在原地。<br>
+    <span class="small">这一条必须原样告诉用户。否则用户会在「壳剥了却还是难受」时以为自己失败。</span></p>
+  </div>
+
+</div></main>
+
+<footer class="site"><div class="wrap">
+  维度层 v1 ｜ 规训集模型 ｜ 强度标定仍在进行，当前示例为单样本标定
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script>
+(function(){
+  const Y = window.YY;
+  let INJS = [];
+
+  function yaoHtml(code){
+    let h = '<span class="yao sm">';
+    for (let i = 2; i >= 0; i--) h += '<i class="' + ((code >> i) & 1 ? '' : 'yin') + '"></i>';
+    return h + '</span>';
+  }
+
+  function renderInjs(){
+    const el = document.getElementById('injs');
+    if (!INJS.length) { el.innerHTML = '<p class="small">（暂无。点击「载入示例」看一个真实结构。）</p>'; return; }
+    el.innerHTML = INJS.map((i, idx) =>
+      '<div class="card soft" style="padding:10px 14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">' +
+      '<span><b>' + i.source + '</b> ｜ 要我显' + (i.dir ? '阳' : '阴') + ' ｜ 强度 <b>' + i.strength + '</b></span>' +
+      '<button class="btn ghost sm" data-del="' + idx + '">解除</button></div>').join('');
+    el.querySelectorAll('[data-del]').forEach(b => b.onclick = function(){
+      INJS.splice(parseInt(b.dataset.del, 10), 1); renderInjs();
+    });
+  }
+
+  document.getElementById('add').onclick = function(){
+    const s = document.getElementById('src').value.trim() || '未命名';
+    INJS.push({ source: s,
+      dir: parseInt(document.getElementById('dir').value, 10),
+      strength: parseInt(document.getElementById('st').value, 10) });
+    document.getElementById('src').value = '';
+    renderInjs();
+  };
+
+  document.getElementById('clear').onclick = function(){ INJS = []; renderInjs(); document.getElementById('out').innerHTML=''; };
+
+  document.getElementById('demo').onclick = function(){
+    document.getElementById('kernel').value = '1';
+    document.getElementById('sex').value = '0';
+    INJS = [
+      { source: '母亲·要乖/要牺牲', dir: 0, strength: 3 },
+      { source: '父亲·多考虑他们', dir: 0, strength: 2 },
+      { source: '场·女性应温柔', dir: 0, strength: 2 },
+      { source: '自我要求·要强', dir: 1, strength: 2 },
+    ];
+    renderInjs();
+  };
+
+  function sexNote(){
+    const k = parseInt(document.getElementById('kernel').value, 10);
+    const s = parseInt(document.getElementById('sex').value, 10);
+    const conflict = (k === 1 && s === 0) || (k === 0 && s === 1);
+    document.getElementById('sexNote').innerHTML = conflict
+      ? '⚠️ 性别脚本训与内核相反，强度固定 2 且不可删除 → 你需要同向训 <b>&gt; 2</b> 才可能无壳。'
+      : '性别脚本训与内核同向，强度 2 帮你撑住真身。';
+  }
+  document.getElementById('kernel').onchange = sexNote;
+  document.getElementById('sex').onchange = sexNote;
+  sexNote();
+  renderInjs();
+
+  document.getElementById('go').onclick = function(){
+    const k = parseInt(document.getElementById('kernel').value, 10);
+    const s = parseInt(document.getElementById('sex').value, 10);
+    const cur = Y.codeFromInj(k, s, INJS);
+    const g = Y.BY_CODE[cur.code];
+    const b = cur.balance;
+    const path = Y.shedPath(k, s, INJS);
+
+    let h = '<div class="result"><div class="head"><div class="sym">' + g.sym + '</div><div>' +
+      '<div class="nm">' + g.name + ' · ' + g.role + '</div>' +
+      '<div class="small">码 ' + cur.code + ' ｜ ' + (g.kind === '真体' ? '真体' : '假壳') +
+      ' ｜ 难度 ' + Y.difficulty(cur.code) + ' / 3</div></div>' +
+      '<div>' + yaoHtml(cur.code) + '</div></div>' +
+      '<div class="kv" style="margin-top:14px">' +
+      '<div>反向合力 <b>' + b.against + '</b></div>' +
+      '<div>同向合力 <b>' + b.for_ + '</b></div>' +
+      '<div>差值 <b>' + b.margin + '</b></div>' +
+      '<div>外显 <b>' + (b.show ? '阳' : '阴') + '</b></div></div></div>';
+
+    if (!Y.isShell(cur.code)) {
+      h += '<div class="card note"><h4 style="margin-top:0">当前不在壳中</h4>' +
+        '<p style="margin:0">同向训已经压过反向训。性别关仍在，但内外不打架。</p></div>';
+      document.getElementById('out').innerHTML = h; return;
+    }
+
+    h += '<h3>破壳路径：按强度降序解除</h3>';
+    if (path.steps.length === 0) {
+      h += '<div class="card warn"><p style="margin:0">在当前规训结构下，<b>解除所有可解除的训也无法翻转</b>。<br>' +
+        '因为性别脚本训（强度 2，不可删除）仍在反向。<br>' +
+        '<span class="small">这意味着：目标不是「没有训」，而是让同向训超过它——即<b>超越性别</b>，而非删除性别。</span></p></div>';
+    } else {
+      h += '<div class="scroll"><table><thead><tr><th class="num">步</th><th>解除</th><th class="num">强度</th>' +
+        '<th>解除后</th><th>反向 : 同向</th><th>状态</th></tr></thead><tbody>';
+      path.steps.forEach((st, i) => {
+        const gc = Y.BY_CODE[st.code];
+        h += '<tr><td class="num">' + (i + 1) + '</td><td>' + (st.removed ? st.removed.source : '—') + '</td>' +
+          '<td class="num">' + (st.removed ? st.removed.strength : '—') + '</td>' +
+          '<td>' + gc.name + ' · ' + gc.role + '</td>' +
+          '<td class="num">' + st.balance.against + ' : ' + st.balance.for_ + '</td>' +
+          '<td>' + (Y.isShell(st.code) ? '<span class="tag warn">仍在壳中</span>' : '<span class="tag ok">✅ 剥壳归真</span>') + '</td></tr>';
+      });
+      h += '</tbody></table></div>';
+      const end = Y.BY_CODE[path.end.code];
+      h += '<div class="card key"><h4 style="margin-top:0">终点</h4>' +
+        '<p style="margin:0"><b>' + end.name + ' · ' + end.role + '</b>（码 ' + path.end.code + '）<br>' +
+        '<span class="small">注意：终点不是你「决定」要成为的，是训解除之后<b>剩下的那个你</b>。</span></p></div>';
+    }
+
+    h += '<div class="card"><h4 style="margin-top:0">还剩下的训</h4><p style="margin:0" class="small">' +
+      (path.remaining && path.remaining.length
+        ? path.remaining.map(i => i.source + '（强度 ' + i.strength + '）').join('、')
+        : '（无）') +
+      '<br>性别脚本训强度 2 永远在列——它不可删除，只能超越。</p></div>';
+
+    document.getElementById('out').innerHTML = h;
+  };
+
+  const hash = decodeURIComponent(location.hash.replace('#',''));
+  if (hash && /^\d$/.test(hash)) {
+    const c = parseInt(hash, 10);
+    document.getElementById('kernel').value = String(Y.energy(c));
+    document.getElementById('sex').value = String(Y.sex(c));
+    sexNote();
+  }
+})();
+</script>
+</body>
+</html>

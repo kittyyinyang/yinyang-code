@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>阴阳人格 · 编码体系</title>
+<meta name="description" content="把阴阳编译成 0 和 1：三爻人格卦、外显能量、难度系数、代际传递与 64 卦关系编码。">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a class="on" href="index.html">总纲</a>
+      <a href="test.html">测一测</a>
+      <a href="family.html">原生家庭</a>
+      <a href="shed.html">破壳路径</a>
+      <a href="motive.html">动机层</a>
+      <a href="hex64.html">64卦</a>
+      <a href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <section class="hero">
+    <h1>把阴阳编译成 0 和 1</h1>
+    <p class="sub">阴阳在自然语言层永远说不清——因为语言本身就在「相」上打转。
+      这套编码的做法是：<b>先把阴阳降维成位运算，再让下游（人 / AI / 产品）只对 0 和 1 做推演</b>。
+      语义只有一个锚点，其余全部由规则推导。</p>
+  </section>
+
+  <div class="card key">
+    <h3>唯一语义锚点</h3>
+    <p style="margin:0">
+      <span class="tag yang">1 · 阳</span> 价值感<b>自己给的</b><br>
+      <span class="tag yin">0 · 阴</span> 价值感<b>要别人给的</b>
+    </p>
+    <p class="small" style="margin:.8em 0 0">
+      除这一条外，编码器不持有任何「阴阳含义」。所有解释由规则推导，不由语感决定。
+    </p>
+  </div>
+
+  <h2 class="anchor">一、三爻：一个人怎么被编码</h2>
+  <p>人格用 3 个 bit 表示，自下而上。三个爻的分工是固定的：</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>爻</th><th>bit</th><th>含义</th><th>取值</th><th>权重</th><th>能不能改</th></tr></thead>
+    <tbody>
+      <tr><td>初爻</td><td class="num">bit0</td><td><b>本源能量</b>（内核）</td><td>1 阳 / 0 阴</td><td class="num">4</td><td>几乎不动，是底色</td></tr>
+      <tr><td>二爻</td><td class="num">bit1</td><td><b>性别</b></td><td>1 男 / 0 女</td><td class="num">2</td><td>不可删除，只能超越</td></tr>
+      <tr><td>三爻</td><td class="num">bit2</td><td><b>外显</b>（真显 or 壳）</td><td>1 显阳 / 0 显阴</td><td class="num">1</td><td>可改变，破壳就是改这一爻</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small">卦码 = 初爻×1 + 二爻×2 + 三爻×4（标准莱布尼茨序，0–7）。</p>
+
+  <div class="card note">
+    <h4 style="margin-top:0">内核 ≠ 外显</h4>
+    <p style="margin:0"><b>内核只由初爻决定</b>，只有阳/阴两种。
+      平时看到的「这个人阳不阳」是<b>外显能量</b>，由三爻加权得出，是 0–7 的连续量。
+      两者不是一回事——这正是「看起来很阴、其实内核是阳」能被表达出来的原因。</p>
+  </div>
+
+  <h2 class="anchor">二、八卦全表</h2>
+  <p>按<b>外显阳能量</b>从高到低排列。这个次序与先天（伏羲）八卦次序一致：乾1 兑2 离3 震4 巽5 坎6 艮7 坤8。</p>
+  <div id="bagua" class="grid g4"></div>
+
+  <div class="scroll">
+  <table id="baguaTable">
+    <thead><tr>
+      <th class="num">先天序</th><th>卦</th><th>爻</th><th>人格</th><th>性质</th>
+      <th class="num">码</th><th class="num">加权</th><th>外显阳能量</th><th>内核</th>
+      <th class="num">难度</th><th>剥壳归真</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h4 style="margin-top:0">真体（四正）· 内外一致</h4>
+      <p style="margin:0">乾 坤 离 坎。外显 = 内核，不撕裂。<br>
+      <span class="small">但「不撕裂」不等于「离终点近」——见难度。</span></p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">假壳（四隅）· 内外相反</h4>
+      <p style="margin:0">艮 震 巽 兑。外显 ≠ 内核，长期处于撕裂中。<br>
+      <span class="small">壳是迎合外部长出来的，不是真实的自己。</span></p>
+    </div>
+  </div>
+
+  <h2 class="anchor">三、外显能量：三个爻怎么综合</h2>
+  <p>外显能量是三爻的<b>加权和</b>，不是简单数阳爻：</p>
+  <pre>r = 初爻×4 + 二爻×2 + 三爻×1        （0–7）
+外显阳能量% = r / 7 × 100
+先天序 = 8 − r</pre>
+  <p>权重 4 / 2 / 1 不是拍脑袋定的，它带来三个结构性后果：</p>
+  <div class="grid g3">
+    <div class="card soft">
+      <h4 style="margin-top:0">① 初爻权重最大</h4>
+      <p style="margin:0;font-size:.92rem">内核主导外显，但<b>改得动</b>——三爻一动就是 1 格，不是 0。</p>
+    </div>
+    <div class="card soft">
+      <h4 style="margin-top:0">② 先天序 1–4 全是阳内核</h4>
+      <p style="margin:0;font-size:.92rem">5–8 全是阴内核。<b>外显能量排序天然把内核分成两半。</b></p>
+    </div>
+    <div class="card soft">
+      <h4 style="margin-top:0">③ 壳只能偏移 1 格</h4>
+      <p style="margin:0;font-size:.92rem">三爻权重恰好是 1，所以<b>壳跨不过内核分界</b>。阳内核再怎么装阴，也还在前四格。</p>
+    </div>
+  </div>
+
+  <h2 class="anchor">四、难度：为什么有些人特别难</h2>
+  <p>难度 = 外显与纯乾/纯坤的<b>偏离绝对值</b>（0–3）。它不用另定义，三爻权重天然给出。</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>卦</th><th class="num">难度</th><th>成因</th><th>要打几仗</th></tr></thead>
+    <tbody>
+      <tr><td>乾 / 坤</td><td class="num">0</td><td>内外完全一致</td><td>0 仗。但<b>离终点最远</b></td></tr>
+      <tr><td>兑 / 艮</td><td class="num">1</td><td>性别与壳<b>互相对冲</b>，只剩 1</td><td>1 仗：剥壳即归位，社会会奖励你</td></tr>
+      <tr><td>离 / 坎</td><td class="num">2</td><td>真体，但性别与内核相反</td><td>性别这一关</td></tr>
+      <tr><td><b>震 / 巽</b></td><td class="num">3</td><td>性别与壳<b>同向叠加</b></td><td><b>2 仗</b>：剥壳之后，性别关还在原地，且没有奖励</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card warn">
+    <h4 style="margin-top:0">反转推论</h4>
+    <p style="margin:0">乾 / 坤 日常最舒服，但<b>离终点最远</b>——因为没有张力推着走。<br>
+    震 / 巽 日常最痛，但<b>离终点最近</b>——剥壳后落点正是离 / 坎。<br>
+    <span class="small">难度衡量的是撕裂程度，不是痛苦程度，也不是价值高低。</span></p>
+  </div>
+
+  <h2 class="anchor">五、突破的方向</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h4 style="margin-top:0">阳内核 → 向上更阳</h4>
+      <p style="margin:0">放下委屈、放下迎合。<br><span class="small">不是变强，是变真。</span></p>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">阴内核 → 向下更阴</h4>
+      <p style="margin:0">放下硬撑、放下证明。<br><span class="small">不是变弱，是变真。</span></p>
+    </div>
+  </div>
+
+  <h2 class="anchor">六、往上一层：64 卦</h2>
+  <p>一个人是 3 bit，一段关系是 6 bit：<b>下卦 = 我，上卦 = 对方</b>。</p>
+  <div class="card key">
+    <h4 style="margin-top:0">上卦不是新维度，是另一个人的完整卦码</h4>
+    <p style="margin:0">父母、伴侣、子女本身就是一个人 → 本身就是一个卦 → <b>三爻语义与下卦完全同构</b>，不需要另发明维度。<br><br>
+      由此，代际传递的两个关键量<b>已经编在码里</b>，不占新爻位：<br>
+      · <b>方式</b>（他怎么对你）= 上卦三爻 = 对方外显<br>
+      · <b>要求</b>（他要你成为什么）= 上卦初爻 = 对方内核</p>
+  </div>
+  <p><a href="hex64.html">→ 64 卦关系矩阵</a>　<a href="family.html">→ 原生家庭解码</a></p>
+
+  <h2 class="anchor">七、这套编码怎么用</h2>
+  <div class="grid g3">
+    <div class="card"><h4 style="margin-top:0"><a href="test.html">测一测</a></h4>
+      <p style="margin:0;font-size:.92rem">12 条可观测判据 → 卦码。含「禁用判据」说明。</p></div>
+    <div class="card"><h4 style="margin-top:0"><a href="family.html">原生家庭解码</a></h4>
+      <p style="margin:0;font-size:.92rem">输入父母卦码，看你的壳是怎么被生成出来的。</p></div>
+    <div class="card"><h4 style="margin-top:0"><a href="shed.html">破壳路径</a></h4>
+      <p style="margin:0;font-size:.92rem">按规训强度降序解除，看卦码什么时候翻转。</p></div>
+  </div>
+
+</div>
+</main>
+
+<footer class="site"><div class="wrap">
+  阴阳人格 · 编码体系 ｜ 编码器 v5 ｜ 卦名仅作索引标签，卦爻辞不作论据 ｜
+  实证层与推演层分开标注
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script>
+(function(){
+  const Y = window.YY;
+  const NAMES = ['乾','兑','离','震','巽','坎','艮','坤']; // 按外显能量降序 = 先天序
+
+  function yaoHtml(code, cls){
+    let h = '<span class="yao sm">';
+    for (let i = 2; i >= 0; i--) {
+      const b = (code >> i) & 1;
+      h += '<i class="' + (b ? '' : 'yin') + (i === 1 ? ' dim' : '') + '"></i>';
+    }
+    return h + '</span>';
+  }
+
+  // 八卦卡片
+  const box = document.getElementById('bagua');
+  let html = '';
+  for (const n of NAMES) {
+    const g = Y.BY_NAME[n];
+    const cls = g.kind === '真体' ? 'true' : 'shell';
+    html += '<a class="gua ' + cls + '" href="test.html#' + encodeURIComponent(n) + '">' +
+      yaoHtml(g.code) +
+      '<div class="sym">' + g.sym + '</div>' +
+      '<div class="nm">' + n + ' · ' + g.role + '</div>' +
+      '<div class="rl">码 ' + g.code + ' ｜ r=' + Y.weightR(g.code) +
+      '<div class="bar"><span style="width:' + Y.rPercent(g.code) + '%"></span></div>' +
+      '难度 ' + Y.difficulty(g.code) + '</div></a>';
+  }
+  box.innerHTML = html;
+
+  // 八卦表格
+  const tb = document.querySelector('#baguaTable tbody');
+  let rows = '';
+  for (const n of NAMES) {
+    const g = Y.BY_NAME[n], t = Y.toTrue(g.code);
+    rows += '<tr>' +
+      '<td class="num">' + Y.xianTian(g.code) + '</td>' +
+      '<td>' + g.sym + ' ' + n + '</td>' +
+      '<td>' + yaoHtml(g.code) + '</td>' +
+      '<td>' + g.role + '</td>' +
+      '<td>' + (g.kind === '真体' ? '<span class="tag ok">真体</span>' : '<span class="tag warn">假壳</span>') + '</td>' +
+      '<td class="num">' + g.code + '</td>' +
+      '<td class="num">' + Y.weightR(g.code) + '</td>' +
+      '<td>' + Y.rPercent(g.code) + '% <div class="bar"><span style="width:' + Y.rPercent(g.code) + '%"></span></div></td>' +
+      '<td>' + (Y.energy(g.code) ? '<span class="tag yang">阳</span>' : '<span class="tag yin">阴</span>') + '</td>' +
+      '<td class="num">' + Y.difficulty(g.code) + '</td>' +
+      '<td>' + (Y.isShell(g.code) ? Y.BY_CODE[t].name + '（' + Y.BY_CODE[t].role + '）' : '—') + '</td>' +
+      '</tr>';
+  }
+  tb.innerHTML = rows;
+})();
+</script>
+</body>
+</html>

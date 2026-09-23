@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>64 卦关系矩阵 · 阴阳人格编码体系</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.mx{border-collapse:collapse; font-size:.82rem; width:auto}
+.mx th,.mx td{border:1px solid var(--line); padding:5px 7px; text-align:center; white-space:nowrap}
+.mx th{background:var(--paper-2)}
+.mx td{cursor:pointer}
+.mx td:hover{background:var(--yang-soft)}
+.mx td.self{background:var(--paper-3); font-weight:700}
+.mx td.dui{background:#E9F0F7}
+.mx td.on{outline:2px solid var(--cinnabar); outline-offset:-2px}
+.mx td .c{display:block; font-family:var(--mono); font-size:.72rem; color:var(--ink-3)}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a href="index.html">总纲</a>
+      <a href="test.html">测一测</a>
+      <a href="family.html">原生家庭</a>
+      <a href="shed.html">破壳路径</a>
+      <a href="motive.html">动机层</a>
+      <a class="on" href="hex64.html">64卦</a>
+      <a href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section class="hero">
+    <h1>64 卦关系矩阵</h1>
+    <p class="sub">一个人是 3 bit，一段关系是 6 bit。<b>下卦 = 我，上卦 = 对方。</b></p>
+  </section>
+
+  <div class="card key">
+    <h4 style="margin-top:0">上卦不是新维度，是另一个人的完整卦码</h4>
+    <p style="margin:0">父母 / 伴侣 / 子女本身就是一个人 → 本身就是一个卦 →
+      三爻语义与下卦<b>完全同构</b>，不需要另发明维度。</p>
+    <table style="margin:10px 0 0">
+      <thead><tr><th>位</th><th>bit</th><th>下卦（我）</th><th>上卦（对方）</th></tr></thead>
+      <tbody>
+        <tr><td>初爻</td><td class="num">bit0 / bit3</td><td>我的内核</td><td>对方的内核 = <b>他对我的要求</b></td></tr>
+        <tr><td>二爻</td><td class="num">bit1 / bit4</td><td>我的性别</td><td>对方的性别</td></tr>
+        <tr><td>三爻</td><td class="num">bit2 / bit5</td><td>我的外显</td><td>对方的外显 = <b>他对我的方式</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card warn">
+    <h4 style="margin-top:0">⚠️ 只有「非人格的场」是推演层</h4>
+    <p style="margin:0">社会 / 集体意识 / 时代不是一个「人」，没有内核与性别。
+      此时上卦退化为<b>只用外显一爻</b>（bit5），bit3 / bit4 恒 0。
+      <span class="small">这部分尚无语料支撑，标记为推演。</span></p>
+  </div>
+
+  <h2 class="anchor">矩阵</h2>
+  <div class="row">
+    <label>读法
+      <select id="rel">
+        <option value="PARTNER">伴侣 / 双生（镜像）</option>
+        <option value="FATHER">父亲（因果）</option>
+        <option value="MOTHER">母亲（因果）</option>
+        <option value="CHILD">子女（反向因果）</option>
+        <option value="FRIEND">朋友 / 同事（投射）</option>
+      </select>
+    </label>
+    <span class="small">点击任意格子看详情</span>
+  </div>
+
+  <div class="scroll">
+    <table class="mx" id="mx"></table>
+  </div>
+  <p class="small">灰底 = 与同卦的人相遇（重卦）；蓝底 = 错卦对（阴阳完全相反）。</p>
+
+  <div id="detail"></div>
+
+  <h2 class="anchor">错卦对：四对经典综卦</h2>
+  <p>阴阳完全相反的两个人，其双视角<b>恰好</b>落在四对经典综卦上：</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>人格配对</th><th>我的视角</th><th class="num">码</th><th>对方的视角</th><th class="num">码</th></tr></thead>
+    <tbody id="pairs"></tbody>
+  </table>
+  </div>
+  <div class="card note">
+    <p style="margin:0"><b>综卦 = 同一段关系的两个视角。</b>
+      你这边看是 A 卦，对方那边看是它的综卦——同一段关系，两个人住在不同的卦里。</p>
+    <p class="small" style="margin:.6em 0 0">卦名仅作索引标签，卦爻辞不作论据。</p>
+  </div>
+
+</div></main>
+
+<footer class="site"><div class="wrap">
+  64 卦 v5 ｜ 卦名仅作索引，不作解释依据
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script>
+(function(){
+  const Y = window.YY;
+  const NAMES = ['乾','兑','离','震','巽','坎','艮','坤'];
+  const table = document.getElementById('mx');
+
+  function build(){
+    let h = '<thead><tr><th>我 \\ 对方</th>';
+    for (const u of NAMES) h += '<th>' + Y.BY_NAME[u].sym + ' ' + u + '</th>';
+    h += '</tr></thead><tbody>';
+    for (const me of NAMES) {
+      h += '<tr><th>' + Y.BY_NAME[me].sym + ' ' + me + '<br><span class="small">' +
+           Y.BY_NAME[me].role + '</span></th>';
+      for (const u of NAMES) {
+        const a = Y.BY_NAME[me].code, b = Y.BY_NAME[u].code;
+        const code = Y.hex(a, b);
+        const cls = (a === b) ? 'self' : (Y.inv(a) === b ? 'dui' : '');
+        h += '<td class="' + cls + '" data-a="' + a + '" data-b="' + b + '">' +
+             Y.hexName(a, b) + '<span class="c">' + code + '</span></td>';
+      }
+      h += '</tr>';
+    }
+    h += '</tbody>';
+    table.innerHTML = h;
+    table.querySelectorAll('td[data-a]').forEach(td => td.onclick = function(){
+      table.querySelectorAll('td').forEach(x => x.classList.remove('on'));
+      td.classList.add('on');
+      show(parseInt(td.dataset.a, 10), parseInt(td.dataset.b, 10));
+    });
+  }
+
+  function yaoHtml(code){
+    let h = '<span class="yao">';
+    for (let i = 2; i >= 0; i--) h += '<i class="' + ((code >> i) & 1 ? '' : 'yin') + '"></i>';
+    return h + '</span>';
+  }
+
+  function show(a, b){
+    const rel = document.getElementById('rel').value;
+    const mine = Y.relHex(a, b, rel);
+    const theirs = Y.relHex(b, a, rel);
+    const ga = Y.BY_CODE[a], gb = Y.BY_CODE[b];
+    let h = '<div class="result"><div class="head">' +
+      '<div><div class="small">下卦（我）</div>' + yaoHtml(a) +
+      '<div class="nm">' + ga.name + ' · ' + ga.role + '</div></div>' +
+      '<div style="font-size:1.6rem">×</div>' +
+      '<div><div class="small">上卦（对方）</div>' + yaoHtml(b) +
+      '<div class="nm">' + gb.name + ' · ' + gb.role + '</div></div>' +
+      '<div><div class="nm" style="font-size:1.6rem">' + mine.name + '</div>' +
+      '<div class="small">码 ' + mine.code + ' ｜ ' + mine.label + '</div></div></div>';
+
+    h += '<div class="kv" style="margin-top:14px">' +
+      '<div>他对我的<b>方式</b>（外显）<b>' + (Y.transmitWay(b) ? '阳' : '阴') + '</b></div>' +
+      '<div>他对我的<b>要求</b>（内核）<b>' + (Y.transmitDemand(b) ? '阳' : '阴') + '</b></div>' +
+      '<div>他带壳 <b>' + (Y.isShell(b) ? '是' : '否') + '</b></div>' +
+      '<div>我的外显能量 <b>' + Y.rPercent(a) + '%</b></div>' +
+      '<div>对方外显能量 <b>' + Y.rPercent(b) + '%</b></div></div>';
+
+    h += '<div class="card" style="margin-top:14px"><h4 style="margin-top:0">' + mine.label + ' · 读法</h4>' +
+      '<p style="margin:0">' + mine.read + '</p></div>';
+
+    h += '<div class="card soft"><h4 style="margin-top:0">对方的视角（综卦）</h4>' +
+      '<p style="margin:0">' + gb.name + ' × ' + ga.name + ' → 码 ' + theirs.code + ' <b>' + theirs.name + '</b><br>' +
+      '<span class="small">同一段关系，两边住在不同的卦里。</span></p></div>';
+
+    if (Y.inv(a) === b) {
+      h += '<div class="card note"><h4 style="margin-top:0">这是一对错卦</h4>' +
+        '<p style="margin:0">阴阳完全相反 → 互为对镜。<span class="small">在伴侣读法下，这是最强的吸引也最强的摩擦。</span></p></div>';
+    }
+    if (a === b) {
+      h += '<div class="card"><h4 style="margin-top:0">同卦相遇</h4>' +
+        '<p style="margin:0">两个 ' + ga.name + ' 在一起 → 重卦「' + mine.name + '」。</p></div>';
+    }
+    h += '</div>';
+    document.getElementById('detail').innerHTML = h;
+  }
+
+  document.getElementById('rel').onchange = function(){ document.getElementById('detail').innerHTML = ''; };
+  build();
+
+  const tb = document.getElementById('pairs');
+  const PR = [['震','巽'],['艮','兑'],['离','坎'],['坤','乾']];
+  tb.innerHTML = PR.map(([a, b]) => {
+    const ca = Y.BY_NAME[a].code, cb = Y.BY_NAME[b].code;
+    return '<tr><td>' + a + '（' + Y.BY_NAME[a].role + '） × ' + b + '（' + Y.BY_NAME[b].role + '）</td>' +
+      '<td>' + Y.hexName(ca, cb) + '</td><td class="num">' + Y.hex(ca, cb) + '</td>' +
+      '<td>' + Y.hexName(cb, ca) + '</td><td class="num">' + Y.hex(cb, ca) + '</td></tr>';
+  }).join('');
+})();
+</script>
+</body>
+</html>

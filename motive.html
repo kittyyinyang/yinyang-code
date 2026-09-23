@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>动机层 · 阴阳人格编码体系</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a href="index.html">总纲</a>
+      <a href="test.html">测一测</a>
+      <a href="family.html">原生家庭</a>
+      <a href="shed.html">破壳路径</a>
+      <a class="on" href="motive.html">动机层</a>
+      <a href="hex64.html">64卦</a>
+      <a href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section class="hero">
+    <h1>动机层</h1>
+    <p class="sub">真实阴阳由<b>动机</b>决定，不由<b>行为</b>决定。<br>
+      这一层补的是卦码体系的盲区：三爻只记行为，不记动机。</p>
+  </section>
+
+  <div class="card key">
+    <h4 style="margin-top:0">唯一语义锚点</h4>
+    <p style="margin:0"><code>1(阳) = 价值感自己给的</code>　<code>0(阴) = 价值感要别人给的</code><br>
+      <span class="small">所以：<b>basis = choice（向内求）→ 阳</b>　<b>basis = fear（向外求）→ 阴</b></span></p>
+  </div>
+
+  <h2 class="anchor">为什么必须有这一层</h2>
+  <div class="card">
+    <p style="margin:0">「我要考上好大学，让那些曾经看不起我的对我刮目相看，我要挣很多钱证明自己
+      —— 但在这个过程中却已经完全失去了自己。」</p>
+    <table style="margin-top:14px">
+      <thead><tr><th>层</th><th>「我要证明自己」</th><th>判定</th></tr></thead>
+      <tbody>
+        <tr><td>dir（行为）</td><td>1 → 显阳（变强 / 赚钱）</td><td>与内核一致</td></tr>
+        <tr><td>basis（动机）</td><td>fear → 向外求（要别人看）</td><td><span class="tag warn">实质是阴</span></td></tr>
+      </tbody>
+    </table>
+    <p style="margin:12px 0 0"><b>行为对了不代表对了。动机不对，做得越多离自己越远。</b></p>
+  </div>
+
+  <h2 class="anchor">两种壳</h2>
+  <div class="grid g2">
+    <div class="card">
+      <h4 style="margin-top:0">① 行为壳</h4>
+      <p style="margin:0"><code>dir ≠ kernel</code><br>
+        在卦码上<b>可见</b> → 四隅卦（震 / 巽 / 艮 / 兑）<br>
+        <span class="small">例子：讨好（内核阳，外显阴）</span></p>
+    </div>
+    <div class="card warn">
+      <h4 style="margin-top:0">② 动机壳</h4>
+      <p style="margin:0"><code>dir = kernel 且 basis = fear</code><br>
+        ⚠️ 在卦码上<b>不可见</b> → 只能靠追问动机发现<br>
+        <span class="small">例子：证明自己（行为顺内核，动机却外求）</span></p>
+    </div>
+  </div>
+  <div class="card note">
+    <p style="margin:0"><b>「假阳」的精确编码定义：<code>dir = 1 且 basis = fear</code></b><br>
+      <span class="small">行为显阳，动机外求。看起来是阳，实质是阴。</span></p>
+  </div>
+
+  <h2 class="anchor">推演</h2>
+  <div class="card">
+    <div class="row">
+      <label>内核 <select id="kernel"><option value="1">阳</option><option value="0">阴</option></select></label>
+    </div>
+  </div>
+
+  <h3>规训清单</h3>
+  <div id="injs"></div>
+  <div class="row">
+    <input type="text" id="src" placeholder="来源，如：场·父系业力(证明自己)" style="flex:1;min-width:180px">
+    <select id="dir"><option value="1">要我显阳</option><option value="0">要我显阴</option></select>
+    <select id="basis"><option value="fear">fear 外求</option><option value="choice">choice 内求</option></select>
+    <select id="st"><option value="0">强度 0</option><option value="1">强度 1</option>
+      <option value="2" selected>强度 2</option><option value="3">强度 3</option></select>
+    <button class="btn ghost sm" id="add">+ 添加</button>
+  </div>
+  <div class="row">
+    <button class="btn" id="go">判定动机层</button>
+    <button class="btn ghost" id="demo">载入示例（父系业力闭环）</button>
+    <button class="btn ghost" id="clear">清空</button>
+  </div>
+
+  <div id="out"></div>
+
+  <h2 class="anchor">反噬：为什么金钱会被收回</h2>
+  <div class="card warn">
+    <p style="margin:0">假阳驱动的成就，地基是<b>外求</b>的（建立在别人的目光上）。<br>
+      一旦外部目光撤走，或主体自己不再需要它 → 结构塌。</p>
+    <p style="margin:12px 0 0"><b>反噬不是玄学的惩罚，是结构性必然：用阴的地基盖阳的楼。</b></p>
+    <table style="margin-top:14px">
+      <thead><tr><th>样本</th><th>表现</th><th>备注</th></tr></thead>
+      <tbody>
+        <tr><td>叔叔伯伯</td><td>英年早逝</td><td>得到过巨大财富权力，随死亡归零</td></tr>
+        <tr><td>堂哥</td><td>破产</td><td>同上</td></tr>
+        <tr><td>本人</td><td>婚姻中财产被全部吞噬</td><td>同一机制的第三个样本</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="anchor">行为指纹：行为与客观条件脱钩 = 底下有训</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>可观测行为</th><th>反推的训</th><th class="num">方向</th></tr></thead>
+      <tbody id="fp"></tbody>
+    </table>
+  </div>
+
+  <h2 class="anchor">破壳路线 C：改写</h2>
+  <div class="grid g3">
+    <div class="card"><h4 style="margin-top:0">路线 A · 删训</h4><p style="margin:0;font-size:.95rem">解除反向训 → <b>行为消失</b></p></div>
+    <div class="card"><h4 style="margin-top:0">路线 B · 增强同向</h4><p style="margin:0;font-size:.95rem">靠抱持顶过去 → 需要外部承托</p></div>
+    <div class="card key"><h4 style="margin-top:0">路线 C · 改写</h4><p style="margin:0;font-size:.95rem">换驱动源 → <b>行为保留，权重归零</b></p></div>
+  </div>
+  <div class="card note">
+    <p style="margin:0"><b>判据：不要问「你还做不做这件事」，要问「你为什么做」。</b><br>
+      <span class="small">同样的「节俭」：恐惧驱动 = 薅羊毛；自主驱动 = 我选择不浪费。外显相同，阴阳相反。</span></p>
+  </div>
+
+</div></main>
+
+<footer class="site"><div class="wrap">
+  动机层 v1（R14）｜ 真实阴阳由 basis 决定 ｜ 强度标定仍在进行
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script>
+(function(){
+  const Y = window.YY;
+  let INJS = [];
+
+  function renderInjs(){
+    const el = document.getElementById('injs');
+    if (!INJS.length) { el.innerHTML = '<p class="small">（暂无。点击「载入示例」看一个真实结构。）</p>'; return; }
+    el.innerHTML = INJS.map((i, idx) =>
+      '<div class="card soft" style="padding:10px 14px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">' +
+      '<span><b>' + i.source + '</b> ｜ 显' + (i.dir ? '阳' : '阴') + ' ｜ ' + i.basis + '（' + (i.basis === 'fear' ? '外求' : '内求') + '） ｜ 强度 <b>' + i.strength + '</b></span>' +
+      '<button class="btn ghost sm" data-del="' + idx + '">删除</button></div>').join('');
+    el.querySelectorAll('[data-del]').forEach(b => b.onclick = function(){
+      INJS.splice(parseInt(b.dataset.del, 10), 1); renderInjs();
+    });
+  }
+
+  document.getElementById('add').onclick = function(){
+    const s = document.getElementById('src').value.trim() || '未命名';
+    INJS.push({ source: s,
+      dir: parseInt(document.getElementById('dir').value, 10),
+      basis: document.getElementById('basis').value,
+      strength: parseInt(document.getElementById('st').value, 10) });
+    document.getElementById('src').value = '';
+    renderInjs();
+  };
+
+  document.getElementById('clear').onclick = function(){ INJS = []; renderInjs(); document.getElementById('out').innerHTML = ''; };
+
+  document.getElementById('demo').onclick = function(){
+    document.getElementById('kernel').value = '1';
+    INJS = [
+      { source: '场·父系业力(证明自己)', dir: 1, basis: 'fear', strength: 3 },
+      { source: '场·江浙沪(追求财富权力)', dir: 1, basis: 'fear', strength: 2 },
+      { source: '序位·长女顶门', dir: 1, basis: 'choice', strength: 2 },
+      { source: '性别脚本', dir: 0, basis: 'fear', strength: 2 },
+    ];
+    renderInjs();
+  };
+
+  document.getElementById('go').onclick = function(){
+    const k = parseInt(document.getElementById('kernel').value, 10);
+    if (!INJS.length) { document.getElementById('out').innerHTML = '<div class="card warn"><p style="margin:0">请先添加规训</p></div>'; return; }
+
+    const ret = Y.retribution(k, INJS);
+    const am  = Y.auditMotive(k, INJS);
+    const cur = Y.codeFromInj(k, 0, INJS);
+    const g   = Y.BY_CODE[cur.code];
+
+    let h = '<div class="result"><div class="head"><div class="sym">' + g.sym + '</div><div>' +
+      '<div class="nm">行为层：' + g.name + ' · ' + g.role + '</div>' +
+      '<div class="small">码 ' + cur.code + ' ｜ 外显 ' + (cur.balance.show ? '阳' : '阴') +
+      ' ｜ 反向 ' + cur.balance.against + ' : 同向 ' + cur.balance.for_ + '</div></div></div></div>';
+
+    h += '<h3>逐条判定</h3><div class="scroll"><table>' +
+      '<thead><tr><th>训</th><th class="num">行为</th><th>动机</th><th class="num">真实阴阳</th><th>类型</th></tr></thead><tbody>';
+    for (const i of INJS) {
+      const sk = Y.shellKind(k, i);
+      const me = Y.motiveEnergy(i);
+      const tagc = sk.kind === '无壳' ? 'ok' : (sk.kind === '动机壳' ? 'warn' : '');
+      h += '<tr><td>' + i.source + '</td>' +
+        '<td class="num">显' + (i.dir ? '阳' : '阴') + '</td>' +
+        '<td>' + (i.basis === 'fear' ? '外求（要别人给）' : '内求（自己给）') + '</td>' +
+        '<td class="num"><b>' + (me ? '阳' : '阴') + '</b></td>' +
+        '<td><span class="tag ' + tagc + '">' + sk.kind + '</span></td></tr>';
+    }
+    h += '</tbody></table></div>';
+
+    h += '<div class="card ' + (ret.risk >= 3 ? 'warn' : 'note') + '"><h4 style="margin-top:0">反噬风险</h4>' +
+      '<div class="kv"><div>风险值 <b>' + ret.risk + '</b></div><div>等级 <b>' + ret.level + '</b></div>' +
+      '<div>假阳训 <b>' + ret.count + '</b> 条</div></div>' +
+      '<p style="margin:10px 0 0" class="small">' + ret.note + '</p>' +
+      (ret.sources.length ? '<p style="margin:6px 0 0" class="small">来源：' + ret.sources.join('、') + '</p>' : '') + '</div>';
+
+    h += '<div class="card"><h4 style="margin-top:0">动机层审计</h4>' +
+      '<div class="kv"><div>真阳 <b>' + am.真阳.length + '</b></div><div>假阳 <b>' + am.假阳.length + '</b></div>' +
+      '<div>自主阴 <b>' + am.自主阴.length + '</b></div><div>恐惧阴 <b>' + am.恐惧阴.length + '</b></div>' +
+      '<div>完成度 <b>' + am.progress + '%</b></div></div>' +
+      '<p style="margin:10px 0 0" class="small">' + am.note + '</p>';
+    if (am.假阳.length) h += '<p style="margin:6px 0 0" class="small">待改写（假阳）：' + am.假阳.join('、') + '</p>';
+    if (am.恐惧阴.length) h += '<p style="margin:6px 0 0" class="small">待改写（恐惧阴）：' + am.恐惧阴.join('、') + '</p>';
+    h += '</div>';
+
+    // 改写后
+    const after = INJS.map(i => (i.basis === 'fear' ? Y.rewriteInj(i, { basis: 'choice' }) : i));
+    const ret2 = Y.retribution(k, after);
+    const am2  = Y.auditMotive(k, after);
+    const cur2 = Y.codeFromInj(k, 0, after);
+    h += '<div class="card key"><h4 style="margin-top:0">若把 fear 全部改写为 choice（路线 C）</h4>' +
+      '<div class="kv"><div>反噬风险 <b>' + ret.risk + ' → ' + ret2.risk + '</b></div>' +
+      '<div>完成度 <b>' + am.progress + '% → ' + am2.progress + '%</b></div>' +
+      '<div>行为层 <b>' + g.name + ' → ' + Y.BY_CODE[cur2.code].name + '</b></div></div>' +
+      '<p style="margin:10px 0 0" class="small">行为保留（强度不变），驱动源替换 → 决策权重归零。</p></div>';
+
+    document.getElementById('out').innerHTML = h;
+  };
+
+  // 行为指纹表
+  (function(){
+    const tb = document.getElementById('fp');
+    tb.innerHTML = (Y.BEHAVIOR_FP || []).map(b =>
+      '<tr><td>' + b.fp + '</td><td>' + b.inj + '</td><td class="num">' + (b.dir ? '阳' : '阴') + '</td></tr>').join('');
+  })();
+
+  renderInjs();
+})();
+</script>
+</body>
+</html>

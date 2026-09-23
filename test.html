@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>测一测 · 阴阳人格编码体系</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a href="index.html">总纲</a>
+      <a class="on" href="test.html">测一测</a>
+      <a href="family.html">原生家庭</a>
+      <a href="shed.html">破壳路径</a>
+      <a href="motive.html">动机层</a>
+      <a href="hex64.html">64卦</a>
+      <a href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section class="hero">
+    <h1>测一测</h1>
+    <p class="sub">判据只问<b>可观测的行为</b>，不问「你觉得自己是阴是阳」。
+      阴阳由规则判定，不由语感判定。<span id="hashNote"></span></p>
+  </section>
+
+  <div class="card note">
+    <h4 style="margin-top:0">怎么答</h4>
+    <p style="margin:0">按<b>第一反应</b>选，不要按「我希望自己是」选。
+      拿不准就选「说不清」——该题记 0 分，不会误导结果。</p>
+  </div>
+
+  <h2 class="anchor">第 0 步 · 性别爻</h2>
+  <div class="card">
+    <p style="margin:0 0 10px">性别爻（二爻）不参与推算，如实填。<span class="small">它不可删除，只能超越。</span></p>
+    <div class="row">
+      <label style="margin-right:14px"><input type="radio" name="sex" value="1" style="width:auto"> 男</label>
+      <label><input type="radio" name="sex" value="0" style="width:auto"> 女</label>
+    </div>
+  </div>
+
+  <h2 class="anchor">第 1 步 · 内核判据（定初爻）</h2>
+  <p class="small">这一组直接指向「价值感从哪来」，权重最高。</p>
+  <div id="qA"></div>
+
+  <h2 class="anchor">第 2 步 · 外显判据（定三爻）</h2>
+  <p class="small">这一组是壳信号，判断你<b>呈现出来</b>的是什么，而不是你是什么。</p>
+  <div id="qB"></div>
+
+  <div class="row">
+    <button class="btn" id="go">推演我的卦码</button>
+    <button class="btn ghost" id="reset">清空</button>
+  </div>
+
+  <div id="out"></div>
+
+  <h2 class="anchor">被禁用的判据</h2>
+  <div class="card warn">
+    <h4 style="margin-top:0">这四条<b>不能</b>用来判断阴阳</h4>
+    <p class="small" style="margin-top:0">它们在阴阳两边都会高频出现，没有判别力。用它们判断，得出的结论必然是错的。</p>
+    <div class="scroll"><table>
+      <thead><tr><th>禁用判据</th><th>为什么禁用</th></tr></thead>
+      <tbody id="ban"></tbody>
+    </table></div>
+  </div>
+
+</div></main>
+
+<footer class="site"><div class="wrap">
+  判据权重表 v1 ｜ 结果仅供参考，请在<a href="verify.html">验证回路</a>反馈分歧
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script>
+(function(){
+  const Y = window.YY;
+  const SEX_LABEL = {1:'男', 0:'女'};
+
+  // 渲染内核题（bit0）与外显题（bit2）
+  function render(group, bit, elId, tip){
+    const rs = Y.RULES.filter(r => r.bit === bit && r.level !== 'X');
+    const el = document.getElementById(elId);
+    let h = '';
+    for (const r of rs) {
+      h += '<label class="q"><span class="t">' + r.desc +
+           ' <span class="tag">' + (r.level === 'A' ? '强证据' : '壳信号') + ' · 权重 ' + r.w + '</span></span>' +
+           '<span class="opts">' +
+           '<input type="radio" name="' + r.id + '" value="1"><span class="opt">偏前者</span>' +
+           '<input type="radio" name="' + r.id + '" value="-1"><span class="opt">偏后者</span>' +
+           '<input type="radio" name="' + r.id + '" value="0"><span class="opt">说不清</span>' +
+           '</span><span class="hint">' + tip + '</span></label>';
+    }
+    el.innerHTML = h;
+  }
+  render('A', 0, 'qA', '偏前者 → 指向阳（1）；偏后者 → 指向阴（0）');
+  render('B', 2, 'qB', '偏前者 → 指向显阳（1）；偏后者 → 指向显阴（0）');
+
+  // 禁用判据
+  const ban = document.getElementById('ban');
+  ban.innerHTML = Y.RULES.filter(r => r.level === 'X')
+    .map(r => '<tr><td>' + r.desc + '</td><td class="small">' + r.desc.replace(/（|）/g,'') + '</td></tr>').join('');
+
+  function val(name){
+    const el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? parseInt(el.value, 10) : null;
+  }
+
+  function yaoHtml(code){
+    let h = '<span class="yao">';
+    for (let i = 2; i >= 0; i--) {
+      const b = (code >> i) & 1;
+      h += '<i class="' + (b ? '' : 'yin') + '"></i>';
+    }
+    return h + '</span>';
+  }
+
+  document.getElementById('reset').onclick = function(){
+    document.querySelectorAll('input[type=radio]').forEach(e => e.checked = false);
+    document.getElementById('out').innerHTML = '';
+  };
+
+  document.getElementById('go').onclick = function(){
+    const out = document.getElementById('out');
+    const sex = val('sex');
+    if (sex === null) { out.innerHTML = '<div class="card warn">请先选择性别爻。</div>'; return; }
+
+    let s0 = 0, s2 = 0, n0 = 0, n2 = 0;
+    for (const r of Y.RULES) {
+      if (r.level === 'X') continue;
+      const v = val(r.id);
+      if (v === null) continue;
+      const add = r.w * v;
+      if (r.bit === 0) { s0 += add; n0++; } else { s2 += add; n2++; }
+    }
+    if (n0 === 0) { out.innerHTML = '<div class="card warn">至少要答一题内核判据。</div>'; return; }
+
+    const kernel = s0 > 0 ? 1 : 0;
+    const showBit = s2 > 0 ? 1 : 0;
+    const code = kernel | (sex << 1) | (showBit << 2);
+    const g = Y.BY_CODE[code];
+    const t = Y.toTrue(code);
+    const tg = Y.BY_CODE[t];
+
+    let h = '<div class="result"><div class="head">' +
+      '<div class="sym">' + g.sym + '</div><div>' +
+      '<div class="nm">' + g.name + ' · ' + g.role + '</div>' +
+      '<div class="small">码 ' + code + ' ｜ ' + (g.kind === '真体' ? '真体 · 内外一致' : '假壳 · 内外相反') + '</div>' +
+      '</div><div>' + yaoHtml(code) + '</div></div>' +
+      '<div class="kv" style="margin-top:16px">' +
+      '<div>内核 <b>' + (kernel ? '阳' : '阴') + '</b></div>' +
+      '<div>性别 <b>' + SEX_LABEL[sex] + '</b></div>' +
+      '<div>外显 <b>' + (showBit ? '阳' : '阴') + '</b></div>' +
+      '<div>外显阳能量 <b>' + Y.rPercent(code) + '%</b>（r=' + Y.weightR(code) + '）</div>' +
+      '<div>先天序 <b>' + Y.xianTian(code) + '</b></div>' +
+      '<div>难度 <b>' + Y.difficulty(code) + ' / 3</b></div>' +
+      '</div>';
+
+    if (Y.isShell(code)) {
+      h += '<div class="card warn" style="margin-top:16px"><h4 style="margin-top:0">你在壳里</h4>' +
+        '<p style="margin:0">外显（' + (showBit ? '阳' : '阴') + '）与内核（' + (kernel ? '阳' : '阴') +
+        '）相反 → 长期撕裂。<br>剥壳归真后是 <b>' + tg.name + ' · ' + tg.role + '</b>（码 ' + t +
+        '）。<br><span class="small">不是变强或变弱，是变真。</span></p>' +
+        '<div class="row"><a class="btn sm" href="shed.html#' + code + '">看破壳路径</a>' +
+        '<a class="btn sm ghost" href="family.html#' + code + '">看壳从哪来</a></div></div>';
+    } else {
+      h += '<div class="card note" style="margin-top:16px"><h4 style="margin-top:0">内外一致</h4>' +
+        '<p style="margin:0">外显与内核相同，不撕裂。' +
+        (Y.difficulty(code) === 0
+          ? '<br><span class="small">难度 0：最舒服，但也最缺少推动你往前走的张力。</span>'
+          : '<br><span class="small">难度 ' + Y.difficulty(code) + '：真体仍需过性别这一关。</span>') +
+        '</p></div>';
+    }
+
+    h += '<div class="card soft" style="margin-top:16px"><h4 style="margin-top:0">判据得分（可复核）</h4>' +
+      '<p style="margin:0" class="small">内核组 <b>' + s0 + '</b>（' + n0 + ' 题）→ 判 ' + (kernel ? '阳' : '阴') +
+      '　｜　外显组 <b>' + s2 + '</b>（' + n2 + ' 题）→ 判 ' + (showBit ? '显阳' : '显阴') + '<br>' +
+      (s0 === 0 ? '⚠️ 内核组得分为 0，判定依据不足，请多答几题或人工复核。' : '') +
+      (n2 === 0 ? '<br>⚠️ 未答外显题，三爻仅由 1 条规则推出，置信度低。' : '') +
+      '</p></div>';
+
+    // 手动覆盖：直接改三爻
+    h += '<div class="card" style="margin-top:16px"><h4 style="margin-top:0">手动校正</h4>' +
+      '<p class="small">如果你已经知道自己的代码，直接改下面三个爻:</p><div class="row">' +
+      '<label>内核 <select id="mk"><option value="1"' + (kernel?' selected':'') + '>阳</option><option value="0"' + (!kernel?' selected':'') + '>阴</option></select></label>' +
+      '<label>性别 <select id="ms"><option value="1"' + (sex?' selected':'') + '>男</option><option value="0"' + (!sex?' selected':'') + '>女</option></select></label>' +
+      '<label>外显 <select id="mv"><option value="1"' + (showBit?' selected':'') + '>显阳</option><option value="0"' + (!showBit?' selected':'') + '>显阴</option></select></label>' +
+      '</div><div id="mOut" class="small"></div></div>';
+
+    h += '<div class="row"><a class="btn sm" href="verify.html#' + code + '">到验证回路比对</a></div>';
+    h += '</div>';
+    out.innerHTML = h;
+
+    function refresh(){
+      const c = (parseInt(document.getElementById('mk').value,10))
+              | (parseInt(document.getElementById('ms').value,10) << 1)
+              | (parseInt(document.getElementById('mv').value,10) << 2);
+      const gg = Y.BY_CODE[c];
+      document.getElementById('mOut').innerHTML =
+        '→ <b>' + gg.name + ' · ' + gg.role + '</b>（码 ' + c + '，难度 ' + Y.difficulty(c) + '）' +
+        (Y.isShell(c) ? '，剥壳归真 → ' + Y.BY_CODE[Y.toTrue(c)].name : '');
+    }
+    ['mk','ms','mv'].forEach(id => document.getElementById(id).onchange = refresh);
+    refresh();
+  };
+
+  // 支持 index.html#震 直接高亮
+  const hash = decodeURIComponent(location.hash.replace('#',''));
+  if (hash && Y.BY_NAME[hash]) {
+    document.getElementById('hashNote').innerHTML =
+      '　已定位：<b>' + hash + ' · ' + Y.BY_NAME[hash].role + '</b>';
+  }
+})();
+</script>
+</body>
+</html>

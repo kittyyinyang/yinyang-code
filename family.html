@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>原生家庭解码 · 阴阳人格编码体系</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a href="index.html">总纲</a>
+      <a href="test.html">测一测</a>
+      <a class="on" href="family.html">原生家庭</a>
+      <a href="shed.html">破壳路径</a>
+      <a href="motive.html">动机层</a>
+      <a href="hex64.html">64卦</a>
+      <a href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section class="hero">
+    <h1>原生家庭解码</h1>
+    <p class="sub">壳不是天生的，是<b>被要求出来的</b>。输入父母的卦码，看你的壳是怎么被生成出来的。</p>
+  </section>
+
+  <h2 class="anchor">代际传递规则</h2>
+  <div class="card key">
+    <h4 style="margin-top:0">父母向子女传递两个东西，方向可以相反</h4>
+    <table style="margin:10px 0 0">
+      <thead><tr><th>传递物</th><th>来源</th><th>含义</th><th>编在哪个爻</th></tr></thead>
+      <tbody>
+        <tr><td><b>方式</b></td><td>父母的<b>外显</b>（三爻）</td><td>他怎么对你</td><td>上卦三爻 = bit5</td></tr>
+        <tr><td><b>要求</b></td><td>父母的<b>内核</b>（初爻）</td><td>他要你成为什么</td><td>上卦初爻 = bit3</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:.8em 0 0"><b>壳由「要求」决定，不由「方式」决定。</b></p>
+  </div>
+
+  <div class="card warn">
+    <h4 style="margin-top:0">⚠️ 这条规则是被数据纠出来的</h4>
+    <p class="small" style="margin-top:0">v1 曾写「传递物 = 父母外显」。用实际数据检验时被证伪：</p>
+    <p class="small" style="margin:0">某家庭父母外显<b>都是阳</b>，v1 据此预测传递「阳」；
+    但当事人实际继承的是<b>阴</b>（不能锋芒太露 / 要乖 / 要收 / 多牺牲 / 多考虑他们）。<br>
+    → v1 错。真实机制是两个传递物，且方向可以相反。</p>
+  </div>
+
+  <h3>撕裂的真正来源</h3>
+  <div class="card">
+    <p style="margin:0">当父母<b>自己带壳</b>时，外显 ≠ 内核 → 方式与要求方向相反 → 向子女发出<b>矛盾指令</b>。<br>
+    <span class="small">这就是「怎么做都不对」的来源。</span></p>
+    <pre style="margin:10px 0 0">撕裂度(父母) = 带壳 ? 1 : 0
+家庭撕裂度 = 撕裂度(父) + 撕裂度(母)      （0–2）</pre>
+  </div>
+
+  <h2 class="anchor">推演</h2>
+
+  <div class="grid g3">
+    <div class="card">
+      <h4 style="margin-top:0">父亲</h4>
+      <select id="father"></select>
+      <div id="fInfo" class="small" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">母亲</h4>
+      <select id="mother"></select>
+      <div id="mInfo" class="small" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">我</h4>
+      <div class="row" style="margin:0 0 8px">
+        <label>内核 <select id="kernel"><option value="1">阳</option><option value="0">阴</option></select></label>
+      </div>
+      <div class="row" style="margin:0">
+        <label>性别 <select id="sex"><option value="1">男</option><option value="0">女</option></select></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="row"><button class="btn" id="go">推演我的卦</button></div>
+  <div id="out"></div>
+
+  <h2 class="anchor">已知的两个实证家庭</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>家庭</th><th>父</th><th>母</th><th>撕裂度</th><th>子女内核</th><th>推得</th><th>实测</th><th>结果</th></tr></thead>
+    <tbody>
+      <tr><td>用户原生家庭</td><td>巽（阳壳男阴）</td><td>艮（阳壳女阴）</td><td class="num">2</td>
+          <td>阳 · 女</td><td>震</td><td>震（阴壳女阳）</td><td><span class="tag ok">✅</span></td></tr>
+      <tr><td>同上 · 妹妹</td><td>巽（阳壳男阴）</td><td>艮（阳壳女阴）</td><td class="num">2</td>
+          <td>阴 · 女</td><td>坤</td><td>坤（全阴）</td><td><span class="tag ok">✅</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card note">
+    <h4 style="margin-top:0">⭐ 决定性验证：同一个母亲，两个女儿</h4>
+    <p style="margin:0">母亲同为艮（阳壳女阴，要求阴）。<br>
+    阳内核的孩子 → <b>震</b>（阴壳女阳，难度 3）<br>
+    阴内核的孩子 → <b>坤</b>（真女阴，难度 0）<br>
+    <span class="small">同一套教养，结果取决于<b>孩子的内核</b>，不取决于教养方式本身。</span></p>
+  </div>
+
+  <div class="card warn">
+    <h4 style="margin-top:0">难度衡量的是撕裂，不是痛苦</h4>
+    <p style="margin:0">坤的难度是 0，但「全阴」同样是代价沉重的结果。<br>
+    <span class="small">难度低 ≠ 过得好。它只说明内外不打架。</span></p>
+  </div>
+
+</div></main>
+
+<footer class="site"><div class="wrap">
+  代际传递 v2 ｜ 实证 2 个家庭 ｜ 若推演与你的实际情况不符，请在<a href="verify.html">验证回路</a>反馈
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script>
+(function(){
+  const Y = window.YY;
+  const NAMES = ['乾','兑','离','震','巽','坎','艮','坤'];
+
+  function fill(id){
+    const el = document.getElementById(id);
+    el.innerHTML = NAMES.map(n => {
+      const g = Y.BY_NAME[n];
+      return '<option value="' + g.code + '">' + n + ' · ' + g.role + '</option>';
+    }).join('');
+  }
+  fill('father'); fill('mother');
+  document.getElementById('father').value = Y.BY_NAME['巽'].code;
+  document.getElementById('mother').value = Y.BY_NAME['艮'].code;
+
+  function yaoHtml(code){
+    let h = '<span class="yao sm">';
+    for (let i = 2; i >= 0; i--) h += '<i class="' + ((code >> i) & 1 ? '' : 'yin') + '"></i>';
+    return h + '</span>';
+  }
+
+  function info(id, code){
+    const g = Y.BY_CODE[code];
+    const way = Y.transmitWay(code), dem = Y.transmitDemand(code);
+    document.getElementById(id).innerHTML =
+      yaoHtml(code) + ' ' + g.sym + ' ' + g.name + '<br>' +
+      '方式（怎么对你）：<b>' + (way ? '阳' : '阴') + '</b>　' +
+      '要求（要你成为）：<b>' + (dem ? '阳' : '阴') + '</b><br>' +
+      (Y.isShell(code) ? '<span class="tag warn">带壳 · 发出矛盾指令</span>' : '<span class="tag ok">真体 · 指令一致</span>');
+  }
+
+  function refresh(){
+    info('fInfo', parseInt(document.getElementById('father').value, 10));
+    info('mInfo', parseInt(document.getElementById('mother').value, 10));
+  }
+  document.getElementById('father').onchange = refresh;
+  document.getElementById('mother').onchange = refresh;
+  refresh();
+
+  document.getElementById('go').onclick = function(){
+    const F = parseInt(document.getElementById('father').value, 10);
+    const M = parseInt(document.getElementById('mother').value, 10);
+    const k = parseInt(document.getElementById('kernel').value, 10);
+    const s = parseInt(document.getElementById('sex').value, 10);
+    const tear = Y.familyTear(F, M);
+
+    const cf = Y.childFrom(k, s, F), cm = Y.childFrom(k, s, M);
+    const gf = Y.BY_CODE[cf], gm = Y.BY_CODE[cm];
+    const agree = cf === cm;
+    const code = cf, g = Y.BY_CODE[code];
+
+    let h = '<div class="result"><div class="head"><div class="sym">' + g.sym + '</div><div>' +
+      '<div class="nm">' + g.name + ' · ' + g.role + '</div>' +
+      '<div class="small">码 ' + code + ' ｜ ' + (g.kind === '真体' ? '真体 · 不撕裂' : '假壳 · 内外相反') +
+      ' ｜ 难度 ' + Y.difficulty(code) + ' / 3</div></div>' +
+      '<div>' + yaoHtml(code) + '</div></div>';
+
+    h += '<div class="kv" style="margin-top:14px">' +
+      '<div>按父推 <b>' + gf.name + '</b></div><div>按母推 <b>' + gm.name + '</b></div>' +
+      '<div>家庭撕裂度 <b>' + tear + ' / 2</b></div>' +
+      '<div>外显阳能量 <b>' + Y.rPercent(code) + '%</b></div></div>';
+
+    if (!agree) {
+      h += '<div class="card warn" style="margin-top:16px"><h4 style="margin-top:0">⚠️ 父母要求相反，规则未定</h4>' +
+        '<p style="margin:0">父要求（内核）<b>' + (Y.transmitDemand(F) ? '阳' : '阴') + '</b> → 推得 ' + gf.name + '；' +
+        '母要求（内核）<b>' + (Y.transmitDemand(M) ? '阳' : '阴') + '</b> → 推得 ' + gm.name + '。<br>' +
+        '目前样本中，<b>冲突时母亲的要求胜出</b>（仅 1 例，不足以定论）。<br>' +
+        '<span class="small">这是一个已知的规则缺口，请在<a href="verify.html">验证回路</a>提交你的案例。</span></p></div>';
+    }
+
+    if (Y.isShell(code)) {
+      h += '<div class="card" style="margin-top:16px"><h4 style="margin-top:0">你的壳是怎么来的</h4>' +
+        '<p style="margin:0">你的内核是<b>' + (k ? '阳' : '阴') + '</b>，但被要求显<b>' +
+        (Y.show(code) ? '阳' : '阴') + '</b> → 两者相反 → 长出' +
+        (Y.show(code) ? '阳' : '阴') + '壳。<br>' +
+        '剥壳归真后是 <b>' + Y.BY_CODE[Y.toTrue(code)].name + ' · ' + Y.BY_CODE[Y.toTrue(code)].role + '</b>。</p></div>';
+    }
+
+    h += '</div>';
+    document.getElementById('out').innerHTML = h;
+  };
+
+  const hash = decodeURIComponent(location.hash.replace('#',''));
+  if (hash && /^\d$/.test(hash)) {
+    const c = parseInt(hash, 10);
+    document.getElementById('kernel').value = String(Y.energy(c));
+    document.getElementById('sex').value = String(Y.sex(c));
+  }
+})();
+</script>
+</body>
+</html>
