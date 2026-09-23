@@ -97,14 +97,15 @@
   </div>
 
   <div class="card note">
-    <p style="margin:0"><b>内容边界</b>：通则与人格画像为语料实证（B35/B377/B29/B201/B611/B680 等）；
-      每卦具体画面为编码系统的结构推演，v2 待语料逐卦校准。卦名仅作索引，卦辞吉凶不采用。</p>
+    <p style="margin:0"><b>内容边界</b>：通则、人格画像与每卦「语料实证」已按 v2 逐卦校准
+      （A=语料直证 · B=案例实证 · C=结构推演；兑组〈阴壳男阳〉专属样本缺口已标注）。
+      卦名仅作索引，卦辞吉凶不采用。</p>
   </div>
 
 </div></main>
 
 <footer class="site"><div class="wrap">
-  查关系 v1 ｜ 数据：hex64_readings.js ｜ 编码：yinyang_codec v11（judgeKernel / CRUX）
+  查关系 v2 ｜ 数据：hex64_readings.js v2（语料校准）｜ 编码：yinyang_codec v12（judgeKernel / CRUX）
 </div></footer>
 
 <script src="assets/codec.js"></script>
@@ -156,7 +157,9 @@
     h += '<div class="reading"><h5>🖼 画面</h5><p>' + cell.p + '</p>' +
       '<h5>🔗 关系怎么读</h5><p>' + cell.d + '</p>' +
       '<h5>⚠️ 雷区</h5><p>' + cell.w + '</p>' +
-      '<h5>🧭 这关怎么过</h5><p>' + cell.f + '</p></div>';
+      '<h5>🧭 这关怎么过</h5><p>' + cell.f + '</p>' +
+      (cell.e ? '<h5 style="margin:.8em 0 .1em">📎 语料实证</h5><p class="small" style="margin:.1em 0 0">' + cell.e +
+        (R[me] && R[me].src ? '<br><b>我的画像证据：</b>' + R[me].src : '') + '</p>' : '') + '</div>';
 
     h += '<div class="kv" style="margin-top:14px">' +
       '<div>他对我的<b>方式</b>（外显）<b>' + (Y.transmitWay(other) ? '阳' : '阴') + '</b></div>' +

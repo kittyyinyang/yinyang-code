@@ -101,7 +101,7 @@
 </div></main>
 
 <footer class="site"><div class="wrap">
-  64 卦 v5 ｜ 卦名仅作索引，不作解释依据
+  64 卦解读 v2（语料校准）｜ 证据分级：A 语料直证 · B 案例实证 · C 结构推演 ｜ 卦名仅作索引，卦辞吉凶不采用
 </div></footer>
 
 <script src="assets/codec.js"></script>
@@ -114,7 +114,7 @@
 
   function build(){
     let h = '<thead><tr><th>我 \\ 对方</th>';
-    for (const u of NAMES) h += '<th>' + Y.BY_NAME[u].sym + ' ' + u + '</th>';
+    for (const u of NAMES) h += '<th>' + Y.BY_NAME[u].sym + ' ' + u + '<br><span class="small">' + Y.BY_NAME[u].role + '</span></th>';
     h += '</tr></thead><tbody>';
     for (const me of NAMES) {
       h += '<tr><th>' + Y.BY_NAME[me].sym + ' ' + me + '<br><span class="small">' +
@@ -167,13 +167,16 @@
     h += '<div class="card" style="margin-top:14px"><h4 style="margin-top:0">' + mine.label + ' · 读法</h4>' +
       '<p style="margin:0">' + mine.read + '</p></div>';
 
-    const rd = (window.HEX64_READ || {})[a] && window.HEX64_READ[a][b];
+    const G = (window.HEX64_READ || {})[a] || {};
+    const rd = G[b];
     if (rd) {
       h += '<div class="card" style="margin-top:14px"><h4 style="margin-top:0">' + rd.n + ' · 白话解读</h4>' +
         '<p style="margin:.4em 0"><b>画面：</b>' + rd.p + '</p>' +
         '<p style="margin:.4em 0"><b>关系怎么读：</b>' + rd.d + '</p>' +
         '<p style="margin:.4em 0"><b>雷区：</b>' + rd.w + '</p>' +
         '<p style="margin:.4em 0"><b>这关怎么过：</b>' + rd.f + '</p>' +
+        (rd.e ? '<p class="small" style="margin:.5em 0 0"><b>📎 语料实证：</b>' + rd.e + '</p>' : '') +
+        (G.src ? '<p class="small" style="margin:.2em 0 0"><b>我的画像证据：</b>' + G.src + '</p>' : '') +
         '<p class="small" style="margin:.4em 0 0">临界点公式：' + Y.CRUX + ' ｜ 完整版见<a href="relation.html">查关系</a>页</p></div>';
     }
 
