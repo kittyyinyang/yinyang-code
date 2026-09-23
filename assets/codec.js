@@ -508,6 +508,73 @@ function retribution(kernel, injs) {
 //    ⇒ 抱持的有效性条件：① basis=choice ② **双向**（互相看见）
 //    ⇒ 单方面的抱持（只有一方被看见）不能剥壳
 
+// ⭐⭐ R19 情绪通道（affect channel）：一个**独立于三爻**的维度
+//    实证（用户对比双生 vs 前夫）：
+//       · 前夫·坎（真体男阴）：养育环境**允许**情绪表达 → 感性流露、当面哭 → 情绪通道**开**
+//       · 双生·巽（阳壳男阴）：养育环境**不允许**情绪表达 → 几乎完全封闭、感知不到喜怒哀乐 → 通道**闭**
+//    ⇒ **同样内核阴的男人，差别就在情绪通道开不开**
+//       通道开 → 坎（真阴，能承载、能表达脆弱）
+//       通道闭 → 巽（阳壳，理性脑代偿、决绝、感觉不到）
+//    ⇒ ⭐ 理性脑的强度 = 壳的厚度。情绪被封，能量只能走理性通道 → 理性异常发达。
+//       **「他理性脑强很多很多」不是优势，是壳的代偿症状。**
+//    ⇒ 这解释了：决绝断舍离不是想清楚了，是**感觉不到**；
+//       你讨好乞求他回避拒绝，是因为连接需要情绪通道，而他的通道是关的。
+//
+//    ⇒ ⭐ R7 造壳的**第三个来源**（此前只有 A父母 / B场）：
+//       **来源C · 情绪禁止**：养育环境不允许情绪表达 → 内核被封 → 必成壳
+//
+// ⭐⭐ 痛感差异：震与巽同为难度 3，但**难的方式不同**
+//    · 震（阴壳）：**知道自己难受** → 有信号，内外撕裂，痛感明确
+//    · 巽（阳壳）：**连自己难受都不知道** → 无信号
+//    ⇒ **有痛感 = 有信号；无信号更难。** 巽的实际难度高于震。
+
+const AFFECT = { OPEN: '情绪通道开（养育环境允许表达）', SHUT: '情绪通道闭（养育环境禁止表达）' };
+
+// 情绪通道 → 是否成壳
+function affectChannel(open, kernel) {
+  if (open) return { open: true, shell: false,
+    note: '情绪通道开 → 即使内核是阴，也能是真体（坎/坤）：感得到，才承载得了' };
+  return { open: false, shell: true,
+    note: '情绪通道闭 → 内核被封 → 必成壳（巽/艮）：感觉不到，只能靠理性脑代偿' };
+}
+
+// 情绪禁止训（造壳来源C）
+const affectInj = (strength, source) => ({
+  source: source || '养育环境·情绪禁止', dir: 1, strength: strength == null ? 3 : strength,
+  basis: 'fear', kind: 'AFFECT',
+  note: '⚠️ 造壳来源C：不允许表达情绪 → 内核被封，外显只能走理性/决绝' });
+
+// 痛感 / 自知度：同样是难度 3，谁更难
+function shellAwareness(code) {
+  const n = BY_CODE[code].name;
+  if (n === '震') return { gua: n, pain: 2, aware: 2, level: '知道自己难受',
+    note: '内外撕裂，痛感明确 → **有信号**，破壳有抓手' };
+  if (n === '巽') return { gua: n, pain: 0, aware: 0, level: '连自己难受都不知道',
+    note: '无痛感 → **无信号** → 实际难度高于震：不知道自己有问题，就不会去找出口' };
+  if (n === '艮') return { gua: n, pain: 1, aware: 1, level: '知道自己难受，但归因向外',
+    note: '痛感转为戾气/索取 → 信号被误读为「别人对不起我」' };
+  if (n === '兑') return { gua: n, pain: 1, aware: 1, level: '知道自己难受，但用讨好掩盖',
+    note: '痛感转为经营被喜欢 → 信号被误读为「我再乖一点就好了」' };
+  return { gua: n, pain: 0, aware: 2, level: '真体', note: '内外一致，无撕裂' };
+}
+
+// ⭐⭐ R20 壳可回弹（relapse）
+//    实证：用户剥壳过程中，与双生分离后「一次一次地讨好乞求恢复链接」
+//    ⇒ 被抛弃 / 被拒绝 = **壳的触发器**，外显爻会翻回壳
+//    ⇒ 回弹 ≠ 失败。训的决策权重已归零 ≠ 行为模式不再被应激触发。
+//    ⇒ ⭐ 关键区分：**解除是决策层的事，回弹是应激层的事。**
+//       不要因为「我还是会讨好」就判定自己没好。
+const RELAPSE_TRIGGER = ['被抛弃', '被拒绝', '失去连接', '被忽视', '权威否定'];
+
+function relapse(kernel, sexBit, trueCode, trigger) {
+  const shellCode = kernel | (sexBit << 1) | ((kernel ? 0 : 1) << 2); // 外显翻回与内核相反
+  return { trigger, from: BY_CODE[trueCode].name, to: BY_CODE[shellCode].name,
+    code: shellCode, shell: isShell(shellCode),
+    isTrigger: RELAPSE_TRIGGER.some(t => (trigger || '').includes(t)),
+    note: '回弹 ≠ 失败。训的决策权重归零是决策层的事；'
+        + '被触发时行为模式仍会应激复现，这是应激层的事。' };
+}
+
 // R16 献祭判定
 function sacrifice(inj, aware) {
   const is = inj.basis === 'fear' && inj.strength >= 3 && !aware;
@@ -1013,6 +1080,20 @@ function selfTest9() {
   if (attachment({ seen: true, mutual: false, basis: 'choice' }).canShed) errs.push('R18 单向抱持不应能剥壳');
   if (attachment({ seen: true, mutual: true, basis: 'fear' }).canShed) errs.push('R18 fear 驱动的抱持不应能剥壳');
 
+  // R19 情绪通道
+  if (affectChannel(true, 0).shell) errs.push('R19 情绪通道开 → 不应成壳（前夫·坎）');
+  if (!affectChannel(false, 0).shell) errs.push('R19 情绪通道闭 → 应成壳（双生·巽）');
+  if (affectInj(3).kind !== 'AFFECT') errs.push('R19 情绪禁止训应标记 kind=AFFECT');
+  // 痛感差异：巽无信号，震有信号
+  if (shellAwareness(G('震')).pain <= 0) errs.push('R19 震应有痛感（有信号）');
+  if (shellAwareness(G('巽')).pain !== 0) errs.push('R19 巽应无痛感（无信号）→ 实际难度高于震');
+
+  // R20 回弹
+  const rl = relapse(1, 0, G('离'), '被抛弃');
+  if (!rl.isTrigger) errs.push('R20 「被抛弃」应识别为触发器');
+  if (rl.code !== G('震')) errs.push('R20 阳内核+女 回弹应为震，实为 ' + rl.name0);
+  if (!isShell(rl.code)) errs.push('R20 回弹后应带壳');
+
   return errs;
 }
 
@@ -1026,7 +1107,7 @@ const YY =  { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_
   traceInj, releaseInj, audit, afterRelease, RANK, rankInj, COMPENSATE, compensate,
   fieldInj2, fieldApplies, rewriteInj, isRewritten, rewritePath, BEHAVIOR_FP, matchBehavior,
   BASIS, motiveEnergy, shellKind, pseudoYang, pseudoYin, retribution, auditMotive,
-  XIANG, XING, xiangXing, releaseCheck, lineageChain, sacrifice, lossReaction, attachment, selfTest7, selfTest8, selfTest9 };
+  XIANG, XING, xiangXing, releaseCheck, lineageChain, sacrifice, lossReaction, attachment, AFFECT, affectChannel, affectInj, shellAwareness, RELAPSE_TRIGGER, relapse, selfTest7, selfTest8, selfTest9 };
 
 // ---------- 双环境导出（Node / 浏览器）----------
 if (typeof module !== 'undefined' && module.exports) module.exports = YY;
