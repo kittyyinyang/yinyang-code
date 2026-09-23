@@ -119,6 +119,51 @@
     </table>
   </div>
 
+  <h2 class="anchor">相 vs 性</h2>
+  <div class="card note">
+    <p style="margin:0"><b>相</b> = 行为层，可观测、可代际重复<br>
+      <b>性</b> = 动机层，需追问、可变</p>
+    <p style="margin:12px 0 0"><b>⇒ 同一个相，可以有不同的性。判断落在性，不落在相。</b><br>
+      <span class="small">这是改写路线的哲学基础：你不需要改变行为，只需要改变驱动源。</span></p>
+  </div>
+
+  <h2 class="anchor">三代同构：传递在哪里中断</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>代</th><th>相</th><th>性</th><th>动机</th><th>判定</th></tr></thead>
+      <tbody>
+        <tr><td>外婆</td><td>差点送走寄养</td><td>匮乏·养不活</td><td>fear</td><td>首现</td></tr>
+        <tr><td>母亲</td><td>寄养 / 不管</td><td>撑不起 + 投射</td><td>fear</td><td><span class="tag warn">相重复，性也重复 → 传递继续</span></td></tr>
+        <tr><td>本人</td><td>未争抚养权</td><td>活出真实的自己</td><td>choice</td><td><span class="tag ok">⭐ 性已改变 → 传递中断</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small">同一个动作重复了三代，只有这一代的动机换了。
+    <b>解开家族业力 = 不是不做那件事，是不再为同一个理由做。</b></p>
+
+  <h2 class="anchor">⭐ 解除的行为级验收：无疚 + 仍有爱</h2>
+  <div class="card">
+    <p style="margin:0">「母亲不该抛弃孩子」是强度极高的社会训。若仍在执行 → 必然愧疚。
+      若无愧疚 → 只剩两种可能：<b>训已解除</b> 或 <b>情感解离</b>。区分靠第二个变量：<b>是否仍有爱</b>。</p>
+    <div class="row" style="margin-top:14px">
+      <label>愧疚感 <select id="guilt"><option value="0">0 无</option><option value="1">1</option><option value="2">2</option><option value="3">3 强</option></select></label>
+      <label>仍有爱 <select id="care"><option value="0">0 无</option><option value="1">1</option><option value="2">2</option><option value="3" selected>3 强</option></select></label>
+      <button class="btn" id="chk">判定</button>
+    </div>
+    <div id="chkOut"></div>
+    <table style="margin-top:14px">
+      <thead><tr><th class="num">疚</th><th class="num">爱</th><th>判定</th></tr></thead>
+      <tbody>
+        <tr><td class="num">0</td><td class="num">&gt;0</td><td><span class="tag ok">✅ 已解除</span></td></tr>
+        <tr><td class="num">0</td><td class="num">0</td><td><span class="tag warn">⚠️ 疑似解离（不是解除）</span></td></tr>
+        <tr><td class="num">&gt;0</td><td class="num">&gt;0</td><td>仍在执行（还没过课题）</td></tr>
+        <tr><td class="num">&gt;0</td><td class="num">0</td><td><span class="tag warn">⚠️ 训与情感同时枯竭</span></td></tr>
+      </tbody>
+    </table>
+    <p style="margin:12px 0 0" class="small">⭐ 这比「能指认来源」<b>更强、更难伪造</b>：
+      「无疚」证明训不再驱动你，「仍有爱」证明不是情感隔离。两个变量必须同时成立。</p>
+  </div>
+
   <h2 class="anchor">破壳路线 C：改写</h2>
   <div class="grid g3">
     <div class="card"><h4 style="margin-top:0">路线 A · 删训</h4><p style="margin:0;font-size:.95rem">解除反向训 → <b>行为消失</b></p></div>
@@ -232,6 +277,19 @@
       '<p style="margin:10px 0 0" class="small">行为保留（强度不变），驱动源替换 → 决策权重归零。</p></div>';
 
     document.getElementById('out').innerHTML = h;
+  };
+
+  // R15 解除验收
+  document.getElementById('chk').onclick = function(){
+    const g = parseInt(document.getElementById('guilt').value, 10);
+    const c = parseInt(document.getElementById('care').value, 10);
+    const r = Y.releaseCheck({ guilt: g, care: c, socialStrength: 3 });
+    document.getElementById('chkOut').innerHTML =
+      '<div class="card ' + (r.passing ? 'key' : 'warn') + '" style="margin-top:12px">' +
+      '<h4 style="margin-top:0">' + r.verdict + '</h4>' +
+      '<div class="kv"><div>疚 <b>' + r.guilt + '</b></div><div>爱 <b>' + r.care + '</b></div>' +
+      '<div>社会训强度 <b>' + r.strength + '</b></div></div>' +
+      '<p style="margin:10px 0 0" class="small">' + r.note + '</p></div>';
   };
 
   // 行为指纹表

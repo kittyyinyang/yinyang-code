@@ -466,6 +466,68 @@ function retribution(kernel, injs) {
     note: '用阴的地基盖阳的楼 → 外部目光撤走即塌。反噬是结构性必然，不是惩罚' };
 }
 
+// ⭐ 「相」 vs 「性」（用户原话：「抛弃只是一个相而已」）
+//     相 = 行为层，可观测，可重复   ｜ 性 = 动机层，需追问，可变
+//    ⇒ **同一个相，可以有不同的性** —— 这是改写路线的哲学基础
+//    ⇒ 编码含义：不要用「他做了什么」判人，要用「他为什么做」判人
+const XIANG = '相 · 行为层（可观测、可代际重复）';
+const XING  = '性 · 动机层（需追问、可变）';
+const xiangXing = (xiang, xing) => ({ xiang, xing, XING, XIANG,
+  sameForm: true,
+  note: '相同：' + xiang + ' ｜ 不同：' + xing + ' → 判断落在性，不落在相' });
+
+// ⭐⭐ R15 解除的**行为级验收**：无疚 + 仍有爱
+//    实证（用户原话）：「我承认自己抛弃了女儿没有争抚养权，同时毫无愧疚感……
+//                    同时我又在寒假暑假的时候一个人带女儿，给了她富足的陪伴」
+//    为什么这是最强证据：
+//      「母亲不该抛弃孩子」是一条**强度极高的社会训**。
+//      若仍在执行 → 必然产生愧疚。若无愧疚 → 只剩两种可能：训已解除 / 情感解离。
+//      ⇒ 区分方法是第二个变量：**是否仍有爱**（care）。
+//    ⇒ ⭐ 判据：**解除 = 无疚 + 仍有爱**。两者缺一都不是解除。
+//      · 无疚 + 无爱 = ⚠️ 解离 / 情感隔离，不是解除
+//      · 有疚 + 有爱 = 仍在执行（还没过课题）
+//      · 有疚 + 无爱 = 训与情感同时枯竭
+//    这是 R10（能指认来源）之上的**第二道验收**，且更难伪造。
+function releaseCheck(o) {
+  const guilt = o.guilt || 0, care = o.care || 0;   // 各 0–3
+  let verdict, note;
+  if (guilt === 0 && care > 0) {
+    verdict = '已解除';
+    note = '无疚 + 仍有爱 → 训的决策权重真的归零，不是自我说服';
+  } else if (guilt === 0 && care === 0) {
+    verdict = '⚠️ 疑似解离';
+    note = '无疚但也无爱 → 可能是情感隔离，不是解除。需进一步鉴别';
+  } else if (guilt > 0 && care > 0) {
+    verdict = '仍在执行';
+    note = '有疚 + 有爱 → 还在被这条训驱动（还没过课题）';
+  } else {
+    verdict = '⚠️ 训与情感同时枯竭';
+    note = '有疚但无爱 → 需关注，不是解除状态';
+  }
+  return { guilt, care, verdict, note,
+    passing: verdict === '已解除',
+    strength: o.socialStrength == null ? 3 : o.socialStrength,
+    note2: '社会训越强，无疚越难 → 越能作为解除的证据' };
+}
+
+// 三代同构：同一个「相」在代际链上重复出现，但「性」可以不同
+function lineageChain(steps) {
+  // steps: [{ gen:'外婆', xiang:'送走/不养', xiangKey:'抛弃', xing:'匮乏所迫', basis:'fear' }, ...]
+  // xiangKey 用于判定「同一个相」是否在代际间重复（同一行为的不同说法归一）
+  const key = s => s.xiangKey || s.xiang;
+  return steps.map((s, i) => {
+    const rep = i > 0 && steps.slice(0, i).some(p => key(p) === key(s));
+    const prev = steps.slice(0, i).filter(p => key(p) === key(s));
+    const basisChanged = prev.length ? prev[prev.length - 1].basis !== s.basis : false;
+    return { ...s, order: i + 1, repeated: rep, basisChanged,
+      note: rep
+        ? (basisChanged
+            ? '⭐ 相重复，但**性已改变**（' + prev[prev.length - 1].basis + '→' + s.basis + '）→ 代际传递在此中断'
+            : '⚠️ 相重复，性也重复 → 传递仍在继续')
+        : '首现' };
+  });
+}
+
 // 动机层审计：把规训集按 行为/动机 四象限分类
 function auditMotive(kernel, injs) {
   const q = { 真阳: [], 假阳: [], 自主阴: [], 恐惧阴: [] };
@@ -820,6 +882,39 @@ function selfTest8() {
   return errs;
 }
 
+// ---------- 自检 v9：R15 解除的行为级验收 / 相性区分 / 三代同构 ----------
+function selfTest9() {
+  const errs = [];
+
+  // R15 四象限
+  if (!releaseCheck({ guilt: 0, care: 3 }).passing) errs.push('R15 无疚+有爱 → 应为已解除');
+  if (releaseCheck({ guilt: 0, care: 0 }).passing) errs.push('R15 无疚+无爱 → 不应判为解除（疑似解离）');
+  if (releaseCheck({ guilt: 2, care: 3 }).passing) errs.push('R15 有疚+有爱 → 应仍在执行');
+  if (releaseCheck({ guilt: 3, care: 0 }).passing) errs.push('R15 有疚+无爱 → 不应判为解除');
+  // ⭐ 用户实例：抛弃女儿，无疚，仍给富足陪伴
+  const self = releaseCheck({ guilt: 0, care: 3, socialStrength: 3 });
+  if (self.verdict !== '已解除') errs.push('R15 用户实例应判已解除');
+
+  // 相 / 性
+  const xx = xiangXing('抛弃', '希望她活出不一样的人生');
+  if (!xx.note.includes('判')) errs.push('相性 note 缺失判据');
+  if (xx.XIANG.indexOf('相') !== 0) errs.push('XIANG 定义异常');
+
+  // 三代同构：相重复 / 性改变 → 传递中断
+  const ch = lineageChain([
+    { gen: '外婆', xiang: '差点送走', xiangKey: '抛弃', xing: '匮乏', basis: 'fear' },
+    { gen: '母亲', xiang: '寄养不管', xiangKey: '抛弃', xing: '投射', basis: 'fear' },
+    { gen: '用户', xiang: '未争抚养权', xiangKey: '抛弃', xing: '活出自己', basis: 'choice' },
+  ]);
+  if (!ch[1].repeated) errs.push('三代同构 第2代应判定相重复');
+  if (ch[1].basisChanged) errs.push('三代同构 第2代性未变');
+  if (!ch[2].repeated) errs.push('三代同构 第3代应判定相重复');
+  if (!ch[2].basisChanged) errs.push('三代同构 第3代性应已改变');
+  if (!ch[2].note.includes('中断')) errs.push('三代同构 第3代应判定传递中断');
+
+  return errs;
+}
+
 const YY =  { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_READ, relPair, fieldHex,
   isShell, energy, sex, show, toTrue, toShell, rev, inv, hex, unhex, hexRev, hexInv, hexName,
   weightR, yangCount, rPercent, xianTian, deviation, difficulty,
@@ -830,7 +925,7 @@ const YY =  { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_
   traceInj, releaseInj, audit, afterRelease, RANK, rankInj, COMPENSATE, compensate,
   fieldInj2, fieldApplies, rewriteInj, isRewritten, rewritePath, BEHAVIOR_FP, matchBehavior,
   BASIS, motiveEnergy, shellKind, pseudoYang, pseudoYin, retribution, auditMotive,
-  selfTest7, selfTest8 };
+  XIANG, XING, xiangXing, releaseCheck, lineageChain, selfTest7, selfTest8, selfTest9 };
 
 // ---------- 双环境导出（Node / 浏览器）----------
 if (typeof module !== 'undefined' && module.exports) module.exports = YY;
