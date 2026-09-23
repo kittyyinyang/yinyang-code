@@ -470,6 +470,82 @@ function retribution(kernel, injs) {
 //     相 = 行为层，可观测，可重复   ｜ 性 = 动机层，需追问，可变
 //    ⇒ **同一个相，可以有不同的性** —— 这是改写路线的哲学基础
 //    ⇒ 编码含义：不要用「他做了什么」判人，要用「他为什么做」判人
+// ---------- 代际传递 v7 · 献祭 / 失去反应 / 抱持的本质（2026-09-24，由 7 项校正修订）----------
+//
+// ⭐⭐ R5''' 决定性验证：**传递者是主养者，可以不是父母**（2026-09-24 由母亲案例确认）
+//    实证：外婆差点送走母亲 → **大姨辍学赚工分把她留下并养大** → 母亲把大姨投射成母亲
+//       · 按生母(外婆,内核阴)算 → 得坤 ≠ 实际 ❌
+//       · 按主养者(大姨·震,内核阳)算 → 得**艮（阳壳女阴）** ✅ 完全命中
+//    同一套规则解释三个人，命中 3/3：
+//       母亲(内核阴 + 主养者震) → 艮 阳壳
+//       用户(内核阳 + 主养者艮) → 震 阴壳
+//       妹妹(内核阴 + 主养者艮) → 坤 无壳
+//    ⇒ 主养者可以是**任何长期抚养者**（姐姐/祖辈/寄养家庭），不限于父母。
+//    ⇒ 母亲的艮此前我推定为「必须撑起来」，真正机制是：
+//       **大姨(内核阳)要求她显阳，而她内核是阴 → 生成阳壳**。外观要强 = 艮的外显。
+//
+// ⭐ R16 献祭 = 训的**极端形式**
+//    实证（用户原话）：「13岁的我，我必须扛，不是我自主的选择，而是**无意识为家族献祭**」
+//    编码：献祭 = basis=fear + strength=3 + **主体无意识**（不知道自己在被驱动）
+//    ⇒ 与「选择」的区别：献祭者**说不出自己在献祭**，只觉得"应该"。
+//    ⇒ 判据：能说出「我在献祭」的那一刻，献祭就已经结束（回到 R10 溯源=解除）
+//
+// ⭐ R17 面对失去的反应，可区分**真阴**与**阳壳**（2026-09-24 由前夫 vs 双生对照确认）
+//    实证：同样是用户提出离开——
+//       · 前夫·坎（真体男阴）→ **哭了，求她不要离开**，害怕被抛弃
+//       · 双生·巽（阳壳男阴）→ **很决绝地同意**，不示弱
+//    ⇒ **真阴（坎）**：表达脆弱、请求留下、承载
+//    ⇒ **阳壳（巽）**：决绝、立刻同意、不示弱
+//    ⇒ ⚠️ 决绝 ≠ 强大。决绝是**壳的反应**（不能示弱）。
+//    ⇒ 这是一个**高区分度的可观测判据**，可写进测评题项。
+//
+// ⭐⭐ R18 抱持 = **被看见**；承载 ≠ 抱持
+//    实证（用户原话）：灵魂共振，「**两个真实的自我都被对方看见过**」，
+//                    「这是我在婚姻关系中没有得到过的」
+//    拆解：前夫给了**承载**（无条件牺牲、一味承载）但不给她**看见** → 不能剥壳
+//          双生给了**看见**（真实自我被看见）→ 能剥壳
+//    ⇒ 承载是阴的给予（给，但不看），抱持是**对内核的确认**（看见）
+//    ⇒ 抱持的有效性条件：① basis=choice ② **双向**（互相看见）
+//    ⇒ 单方面的抱持（只有一方被看见）不能剥壳
+
+// R16 献祭判定
+function sacrifice(inj, aware) {
+  const is = inj.basis === 'fear' && inj.strength >= 3 && !aware;
+  return { isSacrifice: is, basis: inj.basis, strength: inj.strength, aware: !!aware,
+    note: is ? '⭐ 献祭：恐惧驱动 + 强度3 + 主体无意识 → 他不知道自己在献祭，只觉得「应该」'
+             : (aware ? '已觉察 → 献祭结束（回到 R10：能说出「我在献祭」的那一刻就结束了）'
+                      : '未达献祭阈值') };
+}
+
+// R17 面对失去的反应 → 反推真阴 / 阳壳
+function lossReaction(o) {
+  // o: { vulnerable:bool（表达脆弱/请求留下）, decisive:bool（决绝/立刻同意） }
+  if (o.vulnerable && !o.decisive)
+    return { type: '真阴（坎/坤）', note: '表达脆弱、请求留下、承载 → 内核与外显一致' };
+  if (o.decisive && !o.vulnerable)
+    return { type: '⚠️ 阳壳（巽/艮）', note: '决绝、不示弱 → 决绝 ≠ 强大，是壳的反应（不能示弱）' };
+  if (o.vulnerable && o.decisive)
+    return { type: '混合', note: '既脆弱又决绝 → 可能处于剥壳进行中' };
+  return { type: '未表态', note: '信息不足' };
+}
+
+// R18 抱持 vs 承载
+function attachment(o) {
+  // o: { seen:bool（真实自我被看见）, mutual:bool（双向）, basis }
+  const isHold = !!o.seen && o.basis !== 'fear';
+  if (!o.seen)
+    return { type: '承载（≠抱持）', canShed: false,
+      note: '给了很多，但没有「看见」→ 不能剥壳。承载是阴的给予，抱持是对内核的确认' };
+  if (!o.mutual)
+    return { type: '单向抱持', canShed: false,
+      note: '只有一方被看见 → 不能剥壳。抱持必须双向' };
+  if (o.basis === 'fear')
+    return { type: '⚠️ 恐惧驱动的抱持', canShed: false,
+      note: '看见了，但动机是外求（怕失去/需要被需要）→ 不是抱持，是依赖。不能剥壳' };
+  return { type: '⭐ 抱持（双向）', canShed: true,
+    note: '两个真实的自我都被对方看见 → 唯一能补上「性别脚本训不可删除」那口气的外力' };
+}
+
 const XIANG = '相 · 行为层（可观测、可代际重复）';
 const XING  = '性 · 动机层（需追问、可变）';
 const xiangXing = (xiang, xing) => ({ xiang, xing, XING, XIANG,
@@ -885,6 +961,7 @@ function selfTest8() {
 // ---------- 自检 v9：R15 解除的行为级验收 / 相性区分 / 三代同构 ----------
 function selfTest9() {
   const errs = [];
+  const G = n => BY_NAME[n].code;
 
   // R15 四象限
   if (!releaseCheck({ guilt: 0, care: 3 }).passing) errs.push('R15 无疚+有爱 → 应为已解除');
@@ -912,6 +989,30 @@ function selfTest9() {
   if (!ch[2].basisChanged) errs.push('三代同构 第3代性应已改变');
   if (!ch[2].note.includes('中断')) errs.push('三代同构 第3代应判定传递中断');
 
+  // ⭐ R5''' 决定性验证：母亲为什么是艮（主养者=大姨·震，非生母外婆）
+  const mother = childFrom2(0, 0, G('震'));
+  if (mother !== G('艮')) errs.push('R5 内核阴+女+主养者震 → 应为艮，实为 ' + BY_CODE[mother].name);
+  const wrong = childFrom2(0, 0, G('坤'));
+  if (wrong === G('艮')) errs.push('R5 按生母(坤)不应得艮 → 生母模型应失效');
+  // 同一套规则解释三个人
+  if (childFrom2(1, 0, G('艮')) !== G('震')) errs.push('R5 用户(内核阳+主养者艮) → 应为震');
+  if (childFrom2(0, 0, G('艮')) !== G('坤')) errs.push('R5 妹妹(内核阴+主养者艮) → 应为坤');
+
+  // R16 献祭
+  if (!sacrifice({ basis: 'fear', strength: 3 }, false).isSacrifice) errs.push('R16 fear+3+无意识 → 应为献祭');
+  if (sacrifice({ basis: 'fear', strength: 3 }, true).isSacrifice) errs.push('R16 已觉察 → 献祭应结束');
+  if (sacrifice({ basis: 'choice', strength: 3 }, false).isSacrifice) errs.push('R16 choice 驱动不应为献祭');
+
+  // R17 失去反应
+  if (!lossReaction({ vulnerable: true, decisive: false }).type.includes('真阴')) errs.push('R17 脆弱+请求留下 → 应判真阴');
+  if (!lossReaction({ vulnerable: false, decisive: true }).type.includes('阳壳')) errs.push('R17 决绝+不示弱 → 应判阳壳');
+
+  // R18 抱持 vs 承载
+  if (attachment({ seen: false, basis: 'choice' }).canShed) errs.push('R18 未被看见（承载）不应能剥壳');
+  if (!attachment({ seen: true, mutual: true, basis: 'choice' }).canShed) errs.push('R18 双向抱持应能剥壳');
+  if (attachment({ seen: true, mutual: false, basis: 'choice' }).canShed) errs.push('R18 单向抱持不应能剥壳');
+  if (attachment({ seen: true, mutual: true, basis: 'fear' }).canShed) errs.push('R18 fear 驱动的抱持不应能剥壳');
+
   return errs;
 }
 
@@ -925,7 +1026,7 @@ const YY =  { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_
   traceInj, releaseInj, audit, afterRelease, RANK, rankInj, COMPENSATE, compensate,
   fieldInj2, fieldApplies, rewriteInj, isRewritten, rewritePath, BEHAVIOR_FP, matchBehavior,
   BASIS, motiveEnergy, shellKind, pseudoYang, pseudoYin, retribution, auditMotive,
-  XIANG, XING, xiangXing, releaseCheck, lineageChain, selfTest7, selfTest8, selfTest9 };
+  XIANG, XING, xiangXing, releaseCheck, lineageChain, sacrifice, lossReaction, attachment, selfTest7, selfTest8, selfTest9 };
 
 // ---------- 双环境导出（Node / 浏览器）----------
 if (typeof module !== 'undefined' && module.exports) module.exports = YY;
