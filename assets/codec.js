@@ -1097,7 +1097,240 @@ function selfTest9() {
   return errs;
 }
 
-const YY =  { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_READ, relPair, fieldHex,
+// ==================== L6 爬楼模型（意识九层）+ 阴阳判断标准 v10 ====================
+// 语料依据：B471/B664/B102/B96/B294（九层）；B716/B605/B46/B680/B526/B24/B158（判断标准）
+const FLOORS = {
+  9: { name: '无我·超灵', desc: '雌雄同体/天道；性别属性消失（B241 06:57）', codeRef: '二爻脱落' },
+  8: { name: '真我·灵魂', desc: '活出真实的自己（B664 01:03-01:09）', codeRef: '锚点全然实现，R15 全过' },
+  7: { name: '高我', desc: '高阶意识（B664 00:55）', codeRef: '—' },
+  6: { name: '生命蓝图', desc: '知天命；突破家族+集体业力后显现（B102 03:13-03:17）', codeRef: 'R13 改写后 choice 驱动的人生方向' },
+  5: { name: '集体无意识', desc: '社会规训+集体业力（B664 00:10；B96 确认家族业力在四楼）', codeRef: 'R12 场筛选；性别脚本；R23 假阳集体来源' },
+  4: { name: '个体无意识', desc: '原生家庭+家族业力（B96 01:34）', codeRef: 'R1-R5 规训装填；R7 A/B；R11 序位投射；R16 献祭' },
+  3: { name: '信念/习性', desc: '个体信念；眼睫毛比喻——努力可见（B102 01:17）', codeRef: '训的条目内容（dir 层）' },
+  2: { name: '情绪', desc: '情绪层（B102 00:33）', codeRef: 'R19 情绪通道；R17 失去反应' },
+  1: { name: '显意识', desc: '意识/麻瓜（B664 00:02；B471 00:10）', codeRef: '外显行为（三爻）；面具可见层' }
+};
+const RULE_FLOOR = {
+  R1: 4, R2: 4, R3: 5, R4: 4, R5: 4, R6: 3, R7: 4, R8: 3, R9: 1,
+  R10: 4, R11: 4, R12: 5, R13: 6, R14: 5, R15: 8, R16: 4, R17: 2,
+  R18: 2, R19: 2, R20: 3, R21: 5, R22: 5, R23: 5, R24: 1, R25: 3,
+  R26: 8, R27: 4, R28: 1
+};
+const floorOf = ruleId => RULE_FLOOR[ruleId] || null;
+
+// R26 课题完成验证 = 后续生活再触发测试（B220 02:26-02:34 恋鱼以 Kitty 课题亲述）
+// 同类剧情复现不再被触发，才算过课题（R15 验收的后续生活端；与 R20 回弹互补）
+function relapseVerify(againTriggers) {
+  if (againTriggers === null) return { verdict: '待测', note: '需等待同类剧情复现（B220 02:26「后续生活再触发」）', action: '遇同类剧情时记录触发度' };
+  return againTriggers
+    ? { verdict: '未过', note: '同类剧情仍被触发——触发不是失败，是定位（R20 回弹）', action: '记录触发点→溯源该点' }
+    : { verdict: '已过', note: '同类剧情复现不再被触发（B220）', action: '—' };
+}
+
+// R27 能量课题交叉修（B35 00:35-01:04，恋鱼称「施修」）：阳性课题用阴性能量过，反之亦然；同性难过
+function crossCultivate(kernel) {
+  return kernel === 1
+    ? { own: '阳内核', use: '阴性能量修（坤德：包容/看见/允许柔软）', goal: '铜墙铁壁→弹簧网（挡得住也透得进）', ref: 'B35 00:35' }
+    : { own: '阴内核', use: '阳性能量修（乾德：立边界/自爱/自己给价值）', goal: '没有城墙的场→修出独立边界', ref: 'B35 00:35' };
+}
+
+// R28 遇阻本能对称律（B264 05:30-05:46）：反应对称——阳=对抗/fight，阴=恐惧/flight
+// 不止威胁场景：面对高我等正向刺激同样成立（J15 遇阻本能的对称扩展，可入判断标准）
+// stimulus: 'threat'(威胁) | 'positive'(高我/正向刺激)；reaction: 'fight' | 'flight'
+function symmetryLaw(stimulus, reaction) {
+  const S = { threat: '威胁', positive: '正向刺激（高我/课题）' };
+  if (reaction === 'fight') return { verdict: '阳', note: (S[stimulus] || stimulus) + ' → 对抗排斥（fight）', ref: 'B264 05:30' };
+  if (reaction === 'flight') return { verdict: '阴', note: (S[stimulus] || stimulus) + ' → 恐惧退缩（flight）', ref: 'B264 05:30' };
+  return { verdict: '待定', note: 'reaction 须为 fight/flight', ref: 'B264 05:30' };
+}
+
+// R21 分辨难度=壳厚度=规训强度（B716 全篇）
+function shellThickness(hardToTell) {
+  if (hardToTell >= 3) return { thickness: '厚', discipline: '被社会规训严重', need: '需长时间自我探索（B716 00:09）' };
+  if (hardToTell === 2) return { thickness: '中', discipline: '规训中等', need: '可借工具照亮下一层' };
+  return { thickness: '薄/无', discipline: '规训轻', need: '内核已可直读' };
+}
+
+// R22 内外相反定理（B605 01:54-02:09）：意识-潜意识分离⇔表里相反；合一⇔知行合一
+function innerOuterLaw(integrated) {
+  return integrated
+    ? { state: '合一（潜意识已意识化）', relation: '表里一致=知行合一', shell: '无' }
+    : { state: '分离（未整合）', relation: '外显与内核相反', shell: '有壳——壳是分离态的必然几何' };
+}
+
+// R23 假阳三个来源（B605 01:30 不接纳性别/不接纳脆弱；B24 14:48 集体业力需求）
+const FAKE_YANG_SOURCES = [
+  { src: '不接纳自己的性别', floor: 5, ref: 'B605 01:30' },
+  { src: '不接纳自己的脆弱', floor: 2, ref: 'B605 01:33' },
+  { src: '集体业力需求（如男性不许脆弱）', floor: 5, ref: 'B24 14:48' }
+];
+
+// R24 阴装阳=动机壳（无意识）；阳装阴=策略（有目的）（B605 00:27-00:36, 02:18-02:44）
+function disguiseType(kernel, shown, hasPurpose) {
+  if (kernel === 0 && shown === 1) return { type: '阴装阳（动机壳）', conscious: false, note: '假性大女主；不接纳性别/脆弱→假阳坑', ref: 'B605 00:32' };
+  if (kernel === 1 && shown === 0 && hasPurpose) return { type: '阳装阴（策略）', conscious: true, note: '扮猪吃老虎，有明确目的，不是壳', ref: 'B605 02:20' };
+  if (kernel === 1 && shown === 0) return { type: '阳装阴（存疑）', conscious: null, note: '恋鱼：阳倒是不装阴（B605 00:36）——需查目的性', ref: 'B605 00:36' };
+  return { type: '表里一致', conscious: null, note: '无伪装', ref: '—' };
+}
+
+// R25 真假检验（B526 03:38-03:46）：真的破不了，能破的是假的
+function truthTest(breaksUnder) {
+  return breaksUnder
+    ? { verdict: '能破=假的', note: '破防点=壳位置（B526 03:38「真的永远不会破」）', action: '在破防点溯源' }
+    : { verdict: '破不了=真的', note: '该处无需处理', action: '—' };
+}
+
+// 判断标准九条（J1-J7: B46 00:19-00:32 + B680 00:10-02:00；J8/J9: 20260924 用户提出「内核三问邻近维度」，语料原话级验证）
+const JUDGE = [
+  { id: 'J1', name: '不配得感', yang: '太配了', yin: '有不配得', ref: 'B46 00:19', weight: '一票否决级' },
+  { id: 'J2', name: '自我强度', yang: '自我非常强', yin: '自我较弱（≠没有）', ref: 'B680 00:23', weight: 1 },
+  { id: 'J3', name: '事业/感情权重', yang: '重事业轻感情', yin: '重感情轻事业', ref: 'B680 00:38', weight: 1 },
+  { id: 'J4', name: '自恋vs自卑', yang: '自恋（健康）', yin: '自卑', ref: 'B680 01:25', weight: 1 },
+  { id: 'J5', name: '慕强与否', yang: '不慕强', yin: '慕强（找比自己强的伴侣）', ref: 'B680 01:35', weight: 1 },
+  { id: 'J6', name: '依赖性', yang: '不依赖', yin: '依赖人', ref: 'B680 02:00', weight: 1 },
+  { id: 'J7', name: '易经锚', yang: '天行健·自强不息', yin: '厚德载物', ref: 'B680 00:10', weight: '元语言' },
+  { id: 'J8', name: '自我形态', yang: '自我膨胀（评判带来掉价或膨胀，阳走膨胀）', yin: '自我残缺/不完整（少一块，先让自己不完整）', ref: 'N4 10:10 + B415 + B611 02:47 + B54 06:48', weight: 1 },
+  { id: 'J9', name: '最大恐惧', yang: '无能恐惧（无能=不被爱，投射到所有人）', yin: '被抛弃恐惧（更深层=死亡恐惧）', ref: 'B377 00:00 + B29 23:17 + B201 01:28', weight: 1 },
+  // ---- J10-J16 能量层八判据（W01金字塔①能量层 20260924 并入；第4条「强度」与 J2 重复故不重复收录）----
+  { id: 'J10', name: '能量方向', yang: '向外辐射「我在此，我发光」', yin: '向内深潜「在关系中确认自己」', ref: '能量层 #011 03:44 (BV1YJE4zFEJv)', weight: 1 },
+  { id: 'J11', name: '底色本能', yang: '自爱本能（内在完整能量生成系统，不需外界充电）', yin: '爱他本能（靠连接共振获得能量）', ref: '能量层 B3《双生通关秘籍（三）》08:14', weight: 1 },
+  { id: 'J12', name: '爱的识别', yang: '懂爱、重承诺（做不到的不给承诺）', yin: '不懂爱、自我欺骗（索爱填补空洞）', ref: '能量层 B3 07:03', weight: 1 },
+  { id: 'J13', name: '能量流向', yang: '外耗（但凡能外耗，绝不内耗）', yin: '内耗（一半能量对抗另一半，左右手互搏）', ref: '能量层 #018 16:10 (BV1qkVdzuEJa)', weight: 1 },
+  { id: 'J14', name: '回血来源', yang: '成就感+独处回流（耗尽想逃）', yin: '被理解+被看见回血（耗尽想抓）', ref: '能量层 #019 00:07 (BV14wuz6mEUg)', weight: 1 },
+  { id: 'J15', name: '遇阻本能', yang: '战斗——刚上去硬刚到底', yin: '逃跑——算了吧多包容', ref: '能量层 #014 02:36 (BV1YJE4zFEJv)', weight: 1 },
+  { id: 'J16', name: '边界形态', yang: '铜墙铁壁（冲撞必痛）', yin: '没有城墙的场（谁都能进来踩）', ref: '能量层 #020 00:45 (BV1TNJ8zcEv9)', weight: 1 }
+];
+function judgeYinYang(scores) {
+  if (scores.merit != null) return scores.merit < 0.5 ? '阴（不配得一票判定，B46 00:24「一定」）' : '阳';
+  let yang = 0, yin = 0;
+  for (const j of JUDGE) { const v = scores[j.id]; if (v === 1) yang++; else if (v === 0) yin++; }
+  return yang === yin ? '待定（壳厚，B716）' : (yang > yin ? '阳（' + yang + ':' + yin + '）' : '阴（' + yin + ':' + yang + '）');
+}
+
+// ⭐ 阴阳临界点公式（B377 05:02-05:11 恋鱼亲口）——内核三问的黄金锚
+const CRUX = '阴得允许自己爱的人不爱自己，阳得允许自己无能（B377 05:06）';
+
+// 内核三问判定器（20260924 用户提出，四维度全部语料原话级验证）：
+//   Q1 价值来源：自己给(阳)/别人给(阴) —— 抽象锚点本体（B680 00:10 系列）
+//   Q2 自我形态：膨胀(阳)/残缺(阴) —— N4 10:10「阳的特点就是容易膨胀」/ B611 02:47「先让自己的自我不完整的剧本」
+//   Q3 最大恐惧：无能(阳)/被抛弃(阴) —— B377 00:00「无能等于不被爱」/ B29 23:17「阴性能量内在最深刻的恐惧就是怕被抛弃」
+// 输入 a = { source: 0|1|null, form: 0|1|null, fear: 0|1|null }，1=阳 0=阴
+// 冲突时 Q3 恐惧权重最高（存在性恐惧离内核最近：B201 01:28「更深层次的是死亡恐惧」），其次 Q1（锚点本体），Q2 最低
+function judgeKernel(a) {
+  const votes = [['Q1', a.source], ['Q2', a.form], ['Q3', a.fear]];
+  const known = votes.filter(v => v[1] === 0 || v[1] === 1);
+  if (!known.length) return { verdict: '待定', note: '三问均未作答（壳厚，B716）', crux: CRUX };
+  const yang = known.filter(v => v[1] === 1).map(v => v[0]);
+  const yin = known.filter(v => v[1] === 0).map(v => v[0]);
+  if (yang.length && yin.length) {
+    const priority = { Q3: 3, Q1: 2, Q2: 1 };
+    const yinScore = yin.reduce((s, q) => s + priority[q], 0);
+    const yangScore = yang.reduce((s, q) => s + priority[q], 0);
+    return { verdict: yinScore > yangScore ? '阴' : '阳', conflict: true,
+      note: '三问冲突，按恐惧(Q3)>价值(Q1)>形态(Q2)加权 → 阳票[' + yang.join(',') + '] 阴票[' + yin.join(',') + ']', crux: CRUX };
+  }
+  const side = yang.length ? '阳' : '阴';
+  return { verdict: side, conflict: false, note: '三问一致（' + known.map(v => v[0]).join('/') + '）', crux: CRUX };
+}
+
+// 爬楼进度（injs 带 traced/rewritten/verified/releaseCheck 字段）
+function climbState(injs) {
+  const n = injs.length || 1;
+  const traced = injs.filter(i => i.traced).length;
+  const deep = injs.filter(i => i.traced5).length;
+  const rewritten = injs.filter(i => i.rewritten).length;
+  const verified = injs.filter(i => i.releaseCheck && i.releaseCheck.guilt === 0 && i.releaseCheck.love > 0).length;
+  const floor = verified === injs.length && injs.length > 0 ? 8 : (rewritten >= injs.length * 0.5 ? 6 : (deep >= injs.length * 0.5 ? 5 : (traced > 0 ? 4 : 1)));
+  return { total: injs.length, traced, deep, rewritten, verified, floor,
+    note: floor >= 8 ? '真我' : floor >= 6 ? '6楼：改写过半，进入生命蓝图' : floor >= 5 ? '5楼：半数已追到集体/家族源头' : floor >= 4 ? '4楼作业中：溯源点灯' : '起步' };
+}
+
+function selfTest10() {
+  const errs = [];
+  // FLOORS 完整
+  for (let i = 1; i <= 9; i++) if (!FLOORS[i]) errs.push('FLOORS 缺 ' + i);
+  // RULE_FLOOR 覆盖 R1-R28
+  for (let i = 1; i <= 28; i++) if (floorOf('R' + i) == null) errs.push('RULE_FLOOR 缺 R' + i);
+  // R21
+  if (shellThickness(3).thickness !== '厚') errs.push('R21 shellThickness');
+  // R22
+  if (innerOuterLaw(false).shell !== '有壳——壳是分离态的必然几何') errs.push('R22 innerOuterLaw');
+  if (innerOuterLaw(true).relation !== '表里一致=知行合一') errs.push('R22 合一');
+  // R23
+  if (FAKE_YANG_SOURCES.length !== 3) errs.push('R23 sources');
+  // R24
+  if (disguiseType(0, 1).type !== '阴装阳（动机壳）') errs.push('R24 阴装阳');
+  if (disguiseType(1, 0, true).type !== '阳装阴（策略）') errs.push('R24 阳装阴策略');
+  if (disguiseType(1, 0, false).conscious !== null) errs.push('R24 阳装阴存疑');
+  if (disguiseType(0, 0).type !== '表里一致') errs.push('R24 一致');
+  // R25
+  if (truthTest(true).verdict !== '能破=假的') errs.push('R25');
+  // R26 课题完成验证
+  if (relapseVerify(null).verdict !== '待测') errs.push('R26 待测');
+  if (relapseVerify(true).verdict !== '未过') errs.push('R26 未过');
+  if (relapseVerify(false).verdict !== '已过') errs.push('R26 已过');
+  // R27 交叉修
+  if (crossCultivate(1).use.indexOf('阴性能量') < 0) errs.push('R27 阳修阴');
+  if (crossCultivate(0).use.indexOf('阳性能量') < 0) errs.push('R27 阴修阳');
+  // R28 对称律
+  if (symmetryLaw('threat', 'fight').verdict !== '阳') errs.push('R28 威胁fight');
+  if (symmetryLaw('positive', 'flight').verdict !== '阴') errs.push('R28 正向flight');
+  if (symmetryLaw('threat', 'x').verdict !== '待定') errs.push('R28 非法输入');
+  // JUDGE 16条（J1-J7 原始七条 + J8/J9 内核三问 + J10-J16 能量层八判据去重）
+  if (JUDGE.length !== 16) errs.push('JUDGE 条数');
+  if (JUDGE.find(j => j.id === 'J8').yang.indexOf('膨胀') < 0) errs.push('J8 内容');
+  if (JUDGE.find(j => j.id === 'J9').yin.indexOf('被抛弃') < 0) errs.push('J9 内容');
+  if (JUDGE.find(j => j.id === 'J10').yang.indexOf('向外辐射') < 0) errs.push('J10 内容');
+  if (JUDGE.find(j => j.id === 'J16').yin.indexOf('城墙') < 0) errs.push('J16 内容');
+  if (judgeYinYang({ merit: 0 }) !== '阴（不配得一票判定，B46 00:24「一定」）') errs.push('judgeYinYang 一票否决');
+  const jv = judgeYinYang({ J1: 1, J2: 1, J3: 1, J4: 0, J5: 1, J6: 1, J7: 1 });
+  if (jv !== '阳（6:1）') errs.push('judgeYinYang 计分 ' + jv);
+  // climbState
+  const cs = climbState([
+    { traced: true, traced5: true, rewritten: true, releaseCheck: { guilt: 0, love: 2 } },
+    { traced: true, traced5: true, rewritten: true, releaseCheck: { guilt: 0, love: 1 } }]);
+  if (cs.floor !== 8 || cs.verified !== 2) errs.push('climbState 全过→8楼');
+  const cs2 = climbState([{ traced: true, traced5: false, rewritten: false }]);
+  if (cs2.floor !== 4) errs.push('climbState 4楼');
+  const cs3 = climbState([{ traced: true, traced5: true, rewritten: false }, { traced: true, traced5: true, rewritten: false }]);
+  if (cs3.floor !== 5) errs.push('climbState 5楼 ' + cs3.floor);
+  // 爬楼映射抽检
+  if (floorOf('R12') !== 5) errs.push('R12 应在5楼');
+  if (floorOf('R11') !== 4) errs.push('R11 应在4楼');
+  return errs;
+}
+
+// 内核三问自检（20260924 新增：CRUX + judgeKernel + J8/J9）
+function selfTest11() {
+  const errs = [];
+  // CRUX 常量（B377 05:06 恋鱼亲口临界点公式）
+  if (CRUX.indexOf('B377 05:06') < 0 || CRUX.indexOf('允许自己无能') < 0) errs.push('CRUX 内容');
+  // judgeKernel 三问一致
+  if (judgeKernel({ source: 1, form: 1, fear: 1 }).verdict !== '阳') errs.push('judgeKernel 全阳');
+  if (judgeKernel({ source: 0, form: 0, fear: 0 }).verdict !== '阴') errs.push('judgeKernel 全阴');
+  // judgeKernel 冲突：Q3 恐惧权重最高
+  if (judgeKernel({ source: null, form: 1, fear: 0 }).verdict !== '阴') errs.push('judgeKernel Q3>Q2');
+  if (judgeKernel({ source: 1, form: 0, fear: 0 }).verdict !== '阴') errs.push('judgeKernel Q3>Q1');
+  if (judgeKernel({ source: 0, form: 1, fear: 0 }).verdict !== '阴') errs.push('judgeKernel Q3 双压');
+  // 阳 2:1（Q3 阳 + Q1 阳 vs Q2 阴）→ 阳
+  const k2 = judgeKernel({ source: 1, form: 0, fear: 1 });
+  if (k2.verdict !== '阳' || k2.conflict !== true) errs.push('judgeKernel 阳 Conflict');
+  // Q1 优先于 Q2
+  if (judgeKernel({ source: 0, form: 1, fear: null }).verdict !== '阴') errs.push('judgeKernel Q1>Q2 阴');
+  if (judgeKernel({ source: 1, form: 0, fear: null }).verdict !== '阳') errs.push('judgeKernel Q1>Q2 阳');
+  // 全空待定
+  if (judgeKernel({ source: null, form: null, fear: null }).verdict !== '待定') errs.push('judgeKernel 待定');
+  // 与 judgeYinYang 16 条联动（全阳计分 / 阴多数计分）
+  const allY = { J1: 1, J2: 1, J3: 1, J4: 1, J5: 1, J6: 1, J7: 1, J8: 1, J9: 1, J10: 1, J11: 1, J12: 1, J13: 1, J14: 1, J15: 1, J16: 1 };
+  const kv = judgeYinYang(allY);
+  if (kv !== '阳（16:0）') errs.push('judgeYinYang 16条计分 ' + kv);
+  const kv2 = judgeYinYang(Object.assign({ J1: 1 },
+    Object.fromEntries(['J2','J3','J4','J5','J6','J7','J8','J9','J10','J11','J12','J13','J14','J15','J16'].map(k => [k, 0]))));
+  if (kv2 !== '阴（15:1）') errs.push('judgeYinYang 16条计分阴 ' + kv2);
+  return errs;
+}
+
+const YY = { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_READ, relPair, fieldHex,
   isShell, energy, sex, show, toTrue, toShell, rev, inv, hex, unhex, hexRev, hexInv, hexName,
   weightR, yangCount, rPercent, xianTian, deviation, difficulty,
   relHex, transmitWay, transmitDemand, inherit, transmitsShell, childFrom,
@@ -1107,7 +1340,12 @@ const YY =  { GUA, BY_CODE, BY_NAME, BY_ROLE, HEX_NAMES, RULES, FIELD, REL, REL_
   traceInj, releaseInj, audit, afterRelease, RANK, rankInj, COMPENSATE, compensate,
   fieldInj2, fieldApplies, rewriteInj, isRewritten, rewritePath, BEHAVIOR_FP, matchBehavior,
   BASIS, motiveEnergy, shellKind, pseudoYang, pseudoYin, retribution, auditMotive,
-  XIANG, XING, xiangXing, releaseCheck, lineageChain, sacrifice, lossReaction, attachment, AFFECT, affectChannel, affectInj, shellAwareness, RELAPSE_TRIGGER, relapse, selfTest7, selfTest8, selfTest9 };
+  XIANG, XING, xiangXing, releaseCheck, lineageChain, sacrifice, lossReaction, attachment, AFFECT, affectChannel, affectInj, shellAwareness, RELAPSE_TRIGGER, relapse, selfTest7, selfTest8, selfTest9,
+  FLOORS, RULE_FLOOR, floorOf, shellThickness, innerOuterLaw, FAKE_YANG_SOURCES, disguiseType,
+  truthTest, JUDGE, judgeYinYang, climbState, selfTest10,
+  relapseVerify, crossCultivate, symmetryLaw,
+  selfTest, selfTest2, selfTest3,
+  CRUX, judgeKernel, selfTest11 };
 
 // ---------- 双环境导出（Node / 浏览器）----------
 if (typeof module !== 'undefined' && module.exports) module.exports = YY;

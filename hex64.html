@@ -28,6 +28,7 @@
       <a href="shed.html">破壳路径</a>
       <a href="motive.html">动机层</a>
       <a class="on" href="hex64.html">64卦</a>
+      <a href="relation.html">查关系</a>
       <a href="verify.html">验证回路</a>
       <a href="about.html">方法论</a>
     </nav>
@@ -104,6 +105,7 @@
 </div></footer>
 
 <script src="assets/codec.js"></script>
+<script src="assets/hex64_readings.js"></script>
 <script>
 (function(){
   const Y = window.YY;
@@ -164,6 +166,16 @@
 
     h += '<div class="card" style="margin-top:14px"><h4 style="margin-top:0">' + mine.label + ' · 读法</h4>' +
       '<p style="margin:0">' + mine.read + '</p></div>';
+
+    const rd = (window.HEX64_READ || {})[a] && window.HEX64_READ[a][b];
+    if (rd) {
+      h += '<div class="card" style="margin-top:14px"><h4 style="margin-top:0">' + rd.n + ' · 白话解读</h4>' +
+        '<p style="margin:.4em 0"><b>画面：</b>' + rd.p + '</p>' +
+        '<p style="margin:.4em 0"><b>关系怎么读：</b>' + rd.d + '</p>' +
+        '<p style="margin:.4em 0"><b>雷区：</b>' + rd.w + '</p>' +
+        '<p style="margin:.4em 0"><b>这关怎么过：</b>' + rd.f + '</p>' +
+        '<p class="small" style="margin:.4em 0 0">临界点公式：' + Y.CRUX + ' ｜ 完整版见<a href="relation.html">查关系</a>页</p></div>';
+    }
 
     h += '<div class="card soft"><h4 style="margin-top:0">对方的视角（综卦）</h4>' +
       '<p style="margin:0">' + gb.name + ' × ' + ga.name + ' → 码 ' + theirs.code + ' <b>' + theirs.name + '</b><br>' +

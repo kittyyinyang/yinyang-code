@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>查关系 · 两张卦卡，一段关系 · 阴阳人格编码体系</title>
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.pgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+@media(max-width:720px){.pgrid{grid-template-columns:repeat(2,1fr)}}
+.pcard{border:1px solid var(--line); border-radius:10px; padding:10px 12px; cursor:pointer; background:var(--paper-2); transition:.15s}
+.pcard:hover{border-color:var(--cinnabar)}
+.pcard.sel{outline:2px solid var(--cinnabar); outline-offset:-2px; background:var(--yang-soft)}
+.pcard .sym{font-size:1.5rem; line-height:1}
+.pcard .nm{font-weight:700; margin:.3em 0 .15em}
+.pcard .ds{font-size:.78rem; color:var(--ink-3); line-height:1.5}
+.step{margin:.4em 0 .5em; font-weight:700}
+.step small{font-weight:400; color:var(--ink-3)}
+.qrow{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:.5em 0}
+.qrow .qt{width:100%; font-size:.9rem}
+.chip{border:1px solid var(--line); border-radius:999px; padding:4px 12px; cursor:pointer; background:var(--paper-2); font-size:.85rem}
+.chip.sel{background:var(--cinnabar); color:#fff; border-color:var(--cinnabar)}
+.reading h5{margin:.9em 0 .25em; color:var(--cinnabar)}
+.reading p{margin:.15em 0; line-height:1.75}
+.judgebox{border:1px dashed var(--line); border-radius:10px; padding:12px 14px; margin-top:14px; background:var(--paper-2)}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <div class="brand"><span class="y">阴</span><span class="i">阳</span>人格 · 编码体系</div>
+    <nav class="site">
+      <a href="index.html">总纲</a>
+      <a href="test.html">测一测</a>
+      <a href="family.html">原生家庭</a>
+      <a href="shed.html">破壳路径</a>
+      <a href="motive.html">动机层</a>
+      <a href="hex64.html">64卦</a>
+      <a class="on" href="relation.html">查关系</a>
+      <a href="verify.html">验证回路</a>
+      <a href="about.html">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<main><div class="wrap">
+
+  <section class="hero">
+    <h1>查关系</h1>
+    <p class="sub">一个人是 3 bit，一段关系是 6 bit。<b>下面三爻 = 我，上面三爻 = 对面那个人。</b>
+      选出两个人，得到这一卦的白话关系解读。</p>
+  </section>
+
+  <div class="card">
+    <h4 style="margin-top:0">第一步 · 我是什么人</h4>
+    <p class="small" style="margin:.2em 0 .8em">不知道自己是谁？先去<a href="test.html">测一测</a>，或用页面底部的「三问快判」。</p>
+    <div class="pgrid" id="gme"></div>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-top:0">第二步 · 对面是什么人</h4>
+    <p class="small" style="margin:.2em 0 .8em">不确定对面是谁？答完第三步的三问快判，它会帮你推荐。</p>
+    <div class="pgrid" id="gother"></div>
+  </div>
+
+  <div class="card">
+    <h4 style="margin-top:0">第三步 · 看关系</h4>
+    <div class="row">
+      <label>读法
+        <select id="rel">
+          <option value="PARTNER">伴侣 / 双生（镜像）</option>
+          <option value="FATHER">父亲（因果）</option>
+          <option value="MOTHER">母亲（因果）</option>
+          <option value="CHILD">子女（反向因果）</option>
+          <option value="FRIEND">朋友 / 同事（投射）</option>
+        </select>
+      </label>
+      <button class="btn" id="go" disabled>看这一卦</button>
+      <span class="small" id="hint">先选好两个人</span>
+    </div>
+  </div>
+
+  <div id="out"></div>
+
+  <div class="card" style="margin-top:18px">
+    <h4 style="margin-top:0">三问快判 · 不知道对面是谁时用</h4>
+    <p class="small" style="margin:.2em 0 .6em">离内核最近的三问（冲突时恐惧那一票最重）。</p>
+    <div class="qrow"><span class="qt"><b>Q1 价值来源</b>——他的自我价值怎么来的？</span>
+      <span class="chip" data-q="s" data-v="1">自己给</span><span class="chip" data-q="s" data-v="0">别人给</span><span class="chip" data-q="s" data-v="null">不知道</span></div>
+    <div class="qrow"><span class="qt"><b>Q2 自我形态</b>——他的"自我"长什么样？</span>
+      <span class="chip" data-q="f" data-v="1">膨胀（评判带来掉价或膨胀）</span><span class="chip" data-q="f" data-v="0">残缺（少一块，永远不完整）</span><span class="chip" data-q="f" data-v="null">不知道</span></div>
+    <div class="qrow"><span class="qt"><b>Q3 最大恐惧</b>——他最深的怕是什么？</span>
+      <span class="chip" data-q="r" data-v="1">无能（无能=不被爱）</span><span class="chip" data-q="r" data-v="0">被抛弃（更深=活不下去）</span><span class="chip" data-q="r" data-v="null">不知道</span></div>
+    <div class="qrow"><span class="qt"><b>外显观察</b>——他表现出来更像哪个？（辅助）</span>
+      <span class="chip" data-q="x" data-v="1">发光/硬/向外</span><span class="chip" data-q="x" data-v="0">柔/收/向内</span><span class="chip" data-q="x" data-v="null">不知道</span></div>
+    <div id="judge"></div>
+  </div>
+
+  <div class="card note">
+    <p style="margin:0"><b>内容边界</b>：通则与人格画像为语料实证（B35/B377/B29/B201/B611/B680 等）；
+      每卦具体画面为编码系统的结构推演，v2 待语料逐卦校准。卦名仅作索引，卦辞吉凶不采用。</p>
+  </div>
+
+</div></main>
+
+<footer class="site"><div class="wrap">
+  查关系 v1 ｜ 数据：hex64_readings.js ｜ 编码：yinyang_codec v11（judgeKernel / CRUX）
+</div></footer>
+
+<script src="assets/codec.js"></script>
+<script src="assets/hex64_readings.js"></script>
+<script>
+(function(){
+  const Y = window.YY, R = window.HEX64_READ;
+  const NAMES = ['乾','兑','离','震','巽','坎','艮','坤'];
+  let meCode = null, otherCode = null;
+
+  function pick(sel, name){
+    const g = document.getElementById(sel);
+    g.innerHTML = NAMES.map(n => {
+      const gua = Y.BY_NAME[n];
+      const hint = { 乾:'硬汉·不索取·怕无能', 兑:'随和好聊·内里有主意', 离:'大女主·明火·自己发光',
+        震:'装温柔的强核女', 巽:'演强势的缺爱男', 坎:'敏感男·要确认', 艮:'装强的缺爱女', 坤:'包容女·无城墙' }[gua.code];
+      return '<div class="pcard" data-c="' + gua.code + '"><div class="sym">' + gua.sym + '</div>' +
+        '<div class="nm">' + n + ' · ' + gua.role + '</div><div class="ds">' + hint + '</div></div>';
+    }).join('');
+    g.querySelectorAll('.pcard').forEach(c => c.onclick = function(){
+      g.querySelectorAll('.pcard').forEach(x => x.classList.remove('sel'));
+      c.classList.add('sel');
+      if (sel === 'gme') meCode = +c.dataset.c; else otherCode = +c.dataset.c;
+      const ok = meCode !== null && otherCode !== null;
+      document.getElementById('go').disabled = !ok;
+      document.getElementById('hint').textContent = ok ? '准备好了' : '先选好两个人';
+    });
+  }
+  pick('gme'); pick('gother');
+
+  function yaoHtml(code){
+    let h = '<span class="yao">';
+    for (let i = 2; i >= 0; i--) h += '<i class="' + ((code >> i) & 1 ? '' : 'yin') + '"></i>';
+    return h + '</span>';
+  }
+
+  function reading(me, other, rel){
+    const cell = R[me][other], guaM = Y.BY_CODE[me], guaO = Y.BY_CODE[other];
+    const relHex = Y.relHex(me, other, rel), revHex = Y.relHex(other, me, rel);
+    let h = '<div class="card result" style="margin-top:18px"><div class="head">' +
+      '<div><div class="small">下卦（我）</div>' + yaoHtml(me) +
+      '<div class="nm">' + guaM.name + ' · ' + guaM.role + '</div></div>' +
+      '<div style="font-size:1.6rem">×</div>' +
+      '<div><div class="small">上卦（对面）</div>' + yaoHtml(other) +
+      '<div class="nm">' + guaO.name + ' · ' + guaO.role + '</div></div>' +
+      '<div><div class="nm" style="font-size:1.7rem">' + cell.n + '</div>' +
+      '<div class="small">码 ' + relHex.code + ' ｜ ' + relHex.label + '</div></div></div>';
+
+    h += '<div class="reading"><h5>🖼 画面</h5><p>' + cell.p + '</p>' +
+      '<h5>🔗 关系怎么读</h5><p>' + cell.d + '</p>' +
+      '<h5>⚠️ 雷区</h5><p>' + cell.w + '</p>' +
+      '<h5>🧭 这关怎么过</h5><p>' + cell.f + '</p></div>';
+
+    h += '<div class="kv" style="margin-top:14px">' +
+      '<div>他对我的<b>方式</b>（外显）<b>' + (Y.transmitWay(other) ? '阳' : '阴') + '</b></div>' +
+      '<div>他对我的<b>要求</b>（内核）<b>' + (Y.transmitDemand(other) ? '阳' : '阴') + '</b></div>' +
+      '<div>他带壳 <b>' + (Y.isShell(other) ? '是' : '否') + '</b></div>' +
+      '<div>我带壳 <b>' + (Y.isShell(me) ? '是' : '否') + '</b></div></div>';
+
+    const rcell = R[other][me];
+    h += '<div class="card soft" style="margin-top:14px"><h4 style="margin-top:0">对方的视角（综卦）</h4>' +
+      '<p style="margin:0">' + guaO.name + ' × ' + guaM.name + ' → <b>' + rcell.n + '</b>（码 ' + revHex.code + '）' +
+      '<br><span class="small">' + rcell.d.slice(0, 60) + '……同一段关系，两边住在不同的卦里。</span></p></div>';
+
+    h += '<div class="card note" style="margin-top:14px"><p style="margin:0"><b>临界点公式</b>：' + Y.CRUX + '</p></div>';
+    h += '</div>';
+    return h;
+  }
+
+  document.getElementById('go').onclick = function(){
+    const rel = document.getElementById('rel').value;
+    document.getElementById('out').innerHTML = reading(meCode, otherCode, rel);
+    document.getElementById('out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // ---- 三问快判 ----
+  const ans = { s: undefined, f: undefined, r: undefined, x: undefined };
+  document.querySelectorAll('.chip').forEach(c => c.onclick = function(){
+    const q = c.dataset.q;
+    document.querySelectorAll('.chip[data-q="' + q + '"]').forEach(x => x.classList.remove('sel'));
+    c.classList.add('sel');
+    ans[q] = c.dataset.v === 'null' ? null : +c.dataset.v;
+    runJudge();
+  });
+
+  function runJudge(){
+    const k = Y.judgeKernel({ source: ans.s, form: ans.f, fear: ans.r });
+    const v = k.verdict;
+    let rec = '';
+    if (v === '待定') {
+      rec = '三问均未作答——至少答一问。';
+    } else {
+      const kernelSide = (ans.s === 1 || (ans.s === null && ans.r === 1)) ? 1 : (ans.s === 0 || (ans.s === null && ans.r === 0)) ? 0 : (v === '阳' ? 1 : 0);
+      const show = ans.x;
+      let gua;
+      if (show === null || show === undefined) {
+        gua = kernelSide === 1 ? ['乾（男阳）', '离（女阳）'] : ['坎（男阴）', '坤（女阴）'];
+        rec = '内核判定：<b>' + (kernelSide === 1 ? '阳' : '阴') + '</b>。若他外显与内核一致 → ' +
+          (kernelSide === 1 ? '男选乾、女选离' : '男选坎、女选坤') + '（真体）；外显相反 → 带壳（男阴壳=' + (kernelSide === 1 ? '兑' : '巽') + '，女' + (kernelSide === 1 ? '阴壳=震' : '阳壳=艮') + '）。';
+      } else if (show === kernelSide) {
+        gua = kernelSide === 1 ? ['男阳=乾', '女阳=离'] : ['男阴=坎', '女阴=坤'];
+        rec = '内核<b>' + (kernelSide === 1 ? '阳' : '阴') + '</b> × 外显同向 → <b>真体</b>：' + gua.join(' / ') + '。表里如一，回应他即是回应他的核。';
+      } else {
+        const m = (kernelSide === 1 ? (show === 0 ? '震（女）/ 兑（男）' : '—') : (show === 1 ? '艮（女）/ 巽（男）' : '—'));
+        rec = '内核<b>' + (kernelSide === 1 ? '阳' : '阴') + '</b> × 外显相反 → <b>带壳（假' + (show === 1 ? '阳' : '阴') + '）</b>：' + m +
+          '。⚠️ 你回应的常常是他的壳不是他的核——夸外显他嫌你不懂，怼外显他觉得你否定全部。';
+      }
+    }
+    document.getElementById('judge').innerHTML =
+      '<div class="judgebox"><b>判定：' + v + '</b>' + (k.conflict ? '（三问冲突，已按恐惧>价值>形态加权）' : '') +
+      '<p style="margin:.4em 0 0">' + rec + '</p>' +
+      '<p class="small" style="margin:.4em 0 0">临界点：' + Y.CRUX + '</p>' +
+      (k.note && k.conflict ? '<p class="small" style="margin:.3em 0 0">' + k.note + '</p>' : '') + '</div>';
+  }
+})();
+</script>
+</body>
+</html>
