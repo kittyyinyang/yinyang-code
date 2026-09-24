@@ -159,7 +159,10 @@
       '<h5>🔗 关系怎么读</h5><p>' + cell.d + '</p>' +
       '<h5>⚠️ 雷区</h5><p>' + cell.w + '</p>' +
       '<h5>🧭 这关怎么过</h5><p>' + cell.f + '</p>' +
-      (cell.tw ? '<h5 style="margin:.8em 0 .1em">📜 传承智慧</h5><p class="small" style="margin:.1em 0 0">' + cell.tw + '</p>' : '') +
+      (cell.tw ? '<h5 style="margin:.8em 0 .1em">📜 传承智慧</h5>' +
+        '<p class="small" style="margin:.1em 0 0">' + cell.tw.y + '</p>' +
+        '<p class="small" style="margin:.15em 0 0"><b>白话：</b>' + cell.tw.b + '</p>' +
+        '<p class="small" style="margin:.15em 0 0"><b>视角【' + cell.tw.st + '】：</b>' + cell.tw.v + '</p>' : '') +
       (cell.e ? '<h5 style="margin:.8em 0 .1em">📎 语料实证</h5><p class="small" style="margin:.1em 0 0">' + cell.e +
         (R[me] && R[me].src ? '<br><b>我的画像证据：</b>' + R[me].src : '') + '</p>' : '') + '</div>';
 
