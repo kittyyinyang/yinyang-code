@@ -99,13 +99,14 @@
   <div class="card note">
     <p style="margin:0"><b>内容边界</b>：通则、人格画像与每卦「语料实证」已按 v2 逐卦校准
       （A=语料直证 · B=案例实证 · C=结构推演；兑组〈阴壳男阳〉专属样本缺口已标注）。
-      卦名仅作索引，卦辞吉凶不采用。</p>
+      传承智慧取自古今解卦的义理层，逐条标注【已验证】（本体系语料/案例可锚）或【待验证】（结构相合、实证待补）；
+      卦辞吉凶断语仍不采用。</p>
   </div>
 
 </div></main>
 
 <footer class="site"><div class="wrap">
-  查关系 v2 ｜ 数据：hex64_readings.js v2（语料校准）｜ 编码：yinyang_codec v12（judgeKernel / CRUX）
+  查关系 v2.1 ｜ 数据：hex64_readings.js v2.1（语料校准＋传统智慧）｜ 编码：yinyang_codec v12（judgeKernel / CRUX）
 </div></footer>
 
 <script src="assets/codec.js"></script>
@@ -158,6 +159,7 @@
       '<h5>🔗 关系怎么读</h5><p>' + cell.d + '</p>' +
       '<h5>⚠️ 雷区</h5><p>' + cell.w + '</p>' +
       '<h5>🧭 这关怎么过</h5><p>' + cell.f + '</p>' +
+      (cell.tw ? '<h5 style="margin:.8em 0 .1em">📜 传承智慧</h5><p class="small" style="margin:.1em 0 0">' + cell.tw + '</p>' : '') +
       (cell.e ? '<h5 style="margin:.8em 0 .1em">📎 语料实证</h5><p class="small" style="margin:.1em 0 0">' + cell.e +
         (R[me] && R[me].src ? '<br><b>我的画像证据：</b>' + R[me].src : '') + '</p>' : '') + '</div>';
 
